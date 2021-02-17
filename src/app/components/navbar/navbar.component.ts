@@ -43,6 +43,10 @@ profile(){
   // modal.componentInstance.mode = mode;
   // modal.componentInstance.user = user;
  }
+
+  onActivate(event) {
+    window.scroll(0,0);
   }
+}
 
 
