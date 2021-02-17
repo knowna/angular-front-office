@@ -1,0 +1,242 @@
+<div class="row m-0 mb-5">
+    <div class="col-sm-12">
+        <h2 class="header mt-3">{{modalTitle}}</h2>
+    </div>
+</div> 
+
+<!-- <form class="panel-primary" novalidate>
+    <div class="modal-header panel-heading" style="background-color: #364a70;">
+        <h4 class="modal-title pull-left">{{modalTitle}}</h4>
+    </div>
+
+    <div class="card"> -->
+        <!-- <div class="row m-0">
+            
+            <div class="col-sm-6 ml-auto mr-auto" style="margin: inherit;">
+                <span> Merge Ticket from:  </span>
+                <ngx-select-dropdown
+                    (change)="secondaryChanged($event)"
+                    [multiple]="false"
+                    [config]="config"
+                    [options]="secondaryOrderList">
+                </ngx-select-dropdown>
+            </div>  
+
+            <div class="col-sm-6 ml-auto mr-auto" style="margin: inherit;">
+                <span> Merge To Ticket:  </span>
+                <ngx-select-dropdown
+                    (change)="primaryChanged($event)"
+                    [multiple]="false"
+                    [config]="config"
+                    [options]="primaryOrderList">
+                </ngx-select-dropdown>
+            </div>   
+
+
+            
+        </div> -->
+
+        <!-- <div class="row m-0 mt-4">
+            <div class="col-11">
+
+            </div>
+            <div  class="col-1">
+                <button type="button" (click)="merge()" style="float: right;"  class="btn btn-success">Merge </button>
+
+            </div>
+        </div> -->
+
+
+        <!-- <div class="row m-0 mt-5">
+            <div class="col-sm-12">
+                <h6  class="font-weight-bold">  All unsettled tickets  </h6> 
+            </div>
+        </div> -->
+
+        <div class="row m-0">
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <span> Merge Bill From:  </span>
+                        <ngx-select-dropdown
+                            (change)="showDetail($event)"
+                            [multiple]="false"
+                            [config]="config"
+                            [options]="tempPrimaryOrderList">
+                        </ngx-select-dropdown>
+                    </div>
+                </div>
+
+               
+                <div *ngIf="detailPrimaryTicket.Name != null"  class="col-sm-12 card mt-3" style="cursor: pointer;">
+                    <span class="mt-2" style="width:100%"> 
+                        {{detailPrimaryTicket?.Name}}  {{detailPrimaryTicket?.TicketId}}
+                    </span>
+    
+                    <div *ngIf="detailPrimaryTicket.orders?.length > 0 && !detailPrimaryTicket.showLoader" class="table-responsive mb-3">
+                        <div *ngFor="let o of detailPrimaryTicket.orders">
+                            <table class="table">
+                                <caption style="caption-side:top">
+                                    Order No: {{o.OrderNumber}},
+                                    {{o.UserId}} -
+                                    {{o.OrderOpeningTime}}
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <!-- <th>Move This Item</th> -->
+                                        <th class="text-center">Change Quantity </th>
+                                        <th>Name</th>
+                                        <th>Qty</th>
+                                        <th>Unit Price</th>
+                                        <th>Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of o.OrderItems">
+                                        <!-- <td><input  [id]="'item'+i" type="checkbox" (change)="moveOrder(item)"> </td> -->
+                                        <td class="text-center"><input type="number" [(ngModel)]="item.newQty" min="1" style="width: 50%;"> </td>
+                                        <td>{{ getProductById(productList,item.ItemId)?.Name }}</td>
+                                        <td>{{item.Qty}}</td>
+                                        <td>{{item.UnitPrice}}</td>
+                                        <td>{{item.TotalAmount}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> 
+
+                    <div *ngIf="detailPrimaryTicket.orders?.length == 0 && !detailPrimaryTicket.showLoader" class="text-center">
+                        No record found!!
+                    </div>
+                    
+
+                    <div class="row" *ngIf="detailPrimaryTicket.showLoader">
+                        <div class="col-md-12" style="height:300px">
+                          <div class="loader"></div>
+                        </div>
+                    </div>
+    
+                    
+    
+                    
+                    
+                </div>
+
+
+            </div>
+
+            <div class="col-md-5" style="margin: inherit;">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <span> Merge Bill To:  </span>
+                        <ngx-select-dropdown
+                            (change)="secondaryChanged($event)"
+                            [multiple]="false"
+                            [config]="config"
+                            [options]="secondaryOrderList">
+                        </ngx-select-dropdown>
+                    </div>
+                    
+                </div>
+                <div class="row mt-1 m-0">
+
+                    <div *ngIf="deatilSecondaryTicket.Name != null"  class="card col-sm-12 mt-3" style="cursor: pointer;">
+                        <span class="mt-2" style="width:100%"> 
+                            
+                            {{deatilSecondaryTicket?.Name}}  {{deatilSecondaryTicket?.TicketId}}
+                        </span>
+        
+                        <div *ngIf="deatilSecondaryTicket?.orders.length > 0 && !deatilSecondaryTicket.showLoader" class="table-responsive mb-3">
+                            <div *ngFor="let o of deatilSecondaryTicket.orders">
+                                <table class="table">
+                                    <caption style="caption-side:top">
+                                        Order No: {{o.OrderNumber}},
+                                        {{o.UserId}} -
+                                        {{o.OrderOpeningTime}}
+                                    </caption>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Qty</th>
+                                            <th>Unit Price</th>
+                                            <th>Total Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                         <tr *ngFor="let item of o.OrderItems">
+                                            <td>{{ getProductById(productList,item.ItemId)?.Name }}</td>
+                                            <td>{{item.Qty}}</td>
+                                            <td>{{item.UnitPrice}}</td>
+                                            <td>{{item.TotalAmount}}</td>
+                                        </tr> 
+                                        <tr *ngIf="o.OrderItems.length==0" class="text-center">
+                                            No record found!!
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> 
+        
+
+                        <div *ngIf="deatilSecondaryTicket.orders?.length == 0 && !deatilSecondaryTicket.showLoader" class="text-center">
+                            No record found!!
+                        </div>
+                        
+    
+                        <div class="row" *ngIf="deatilSecondaryTicket.showLoader">
+                            <div class="col-md-12" style="height:300px">
+                              <div class="loader"></div>
+                            </div>
+                        </div>
+                       
+        
+                       
+                        
+                    </div>
+
+                    
+
+                    <!-- <div class="col-sm-12 mt-2">
+                        <button type="button" class="btn btn-success" (click)="partialMerge()">
+                            Merge
+                        </button>
+                    </div> -->
+                </div>
+                
+            </div> 
+
+            <div class="col-md-2 mr-0">
+                <button type="button" class="btn btn-success mt-4" (click)="partialMerge()">
+                    Merge
+                </button>
+            </div>
+
+        </div>
+
+        
+        <div *ngIf="showOrders" class="row m-0 mb-2">
+            <div *ngFor="let item of order.OrderItems;index as i " class="row">
+                <table class="table table-borderless">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+
+    <!-- </div> -->
+
+
+    <!-- <div class="modal-footer">
+        <button type="submit" [disabled]="MenuConsumptionForm.invalid" class="btn btn-success pull-left">{{modalBtnTitle}}</button>
+        <button type="reset" class="btn btn-danger" (click)="cancel()">Cancel</button>
+    </div> -->
+<!-- </form> -->
+
+
+
+
+
+

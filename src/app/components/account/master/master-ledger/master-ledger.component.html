@@ -1,0 +1,722 @@
+﻿<div class="container" style="padding-top: 20px;">
+    <div class="row m-0 mt-3">
+        <div class="col-md-4">
+            <!-- <h4>Menu Configure</h4> -->
+            <h2 class="header">Ledger</h2>
+        </div>
+        <div class="col-md-4">
+            <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search by Name"
+                (keyup)="searchItem()" 
+                [(ngModel)]="searchKeyword">
+        </div>
+        <div class="col-md-1">
+            <button *ngIf='masterLedgers && masterLedgers.length' class="btn btn-secondary pull-left" (click)="exportTableToPdf()" style="float: right;">Pdf</button>
+        </div>
+
+        <div class="col-md-1">
+            <button *ngIf='masterLedgers && masterLedgers.length' class="btn btn-primary pull-left" (click)="exportTableToExcel('ledgersTable')">Excel</button>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success" (click)="addMasterLedger()" style="float: right">
+                <strong>
+                    <i class="fa fa-plus"></i>
+                    Add
+                </strong>
+            </button>
+        </div>
+    </div>    
+
+
+
+    <div class="row m-0 mt-2">
+        <div class="col-sm-12 table-responsive">
+            <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../../../assets/images/loading.gif" width="32" height="32" /> Loading...</div>
+            <!-- <table class='table table-bordered'> -->
+            <table id="ledgersTable" class='table table-bordered' *ngIf='masterLedgers && masterLedgers.length'>
+                <thead>
+                    <tr>
+                        <th colspan="3" class="text-center">
+                            <strong>{{ company?.NameEnglish }}</strong>
+                            <!-- <br>Ledger -->
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>UnderGroup Master</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let masterLedger of masterLedgers">
+                        <td>{{masterLedger.Name}}</td>
+                        <!-- <td>{{masterLedger.UnderGroupMaster || ''}}</td> -->
+                        <td>{{ getGroupName(accountTypes,masterLedger.AccountTypeId)?.Name }}</td>
+
+                        <td>
+
+                            <button class="btn btn-primary btn-sm" (click)="editMasterLedger(masterLedger.Id)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm ml-2" (click)="deleteMasterLedger(masterLedger.Id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            
+                        </td>
+                    </tr>
+
+                    <!-- <tr>
+                        <td>abc</td>
+                        <td>xyz</td>
+
+                        <td>
+
+                            <button class="btn btn-primary btn-sm" (click)="editMasterLedger(masterLedger.Id)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm ml-2" (click)="deleteMasterLedger(masterLedger.Id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            
+                        </td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- <div class="panel panel-primary">
+    <div class="panel panel-body">
+
+        <img src="../../images/Add.png" (click)="addMasterLedger()" height="60" width="60" />
+    </div>
+
+    <div class="panel-body">
+        <div class="table-responsive">
+
+            <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../images/loading.gif" width="32" height="32" /> Loading...</div>
+            <div *ngIf='masterLedgers && masterLedgers.length==0' class="alert alert-info" role="alert">No record found!</div>
+
+            <table class='table table-striped' *ngIf='masterLedgers && masterLedgers.length'>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>UnderGroup Master</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let masterLedger of masterLedgers">
+                        <td>{{masterLedger.Name}}</td>
+                        <td>{{masterLedger.UnderGroupMaster}}</td>
+                        <td>
+
+                            <button class="btn btn-primary btn-sm" (click)="editMasterLedger(masterLedger.Id)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm ml-2" (click)="deleteMasterLedger(masterLedger.Id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            
+                        </td>
+
+                       
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div *ngIf="msg" role="alert" class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            {{msg}}
+        </div>
+    </div>
+
+</div> -->
+
+<ng-template #template>
+    <form class="form-horizontal" novalidate (ngSubmit)="onSubmit()" [formGroup]="masterLedgerFrm">
+        <div class="modal-header" style="background-color: #364a70;">
+            <h4 class="modal-title pull-left">{{modalTitle}}</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="container">
+                <div class="panel panel-defaut">
+                    <div class="tab-v1">
+                        <ul class="nav nav-tabs"  id="myTab" role="tablist">
+                            <li class="nav-item waves-effect waves-light">
+                                <a href="#Ledger" class="nav-link m-1 active" id="Ledger-tab" data-toggle="tab" role="tab" aria-controls="Ledger" aria-selected="true">
+                                    Ledger
+                                </a>
+                            </li>
+                            <li class="nav-item waves-effect waves-light">
+                                <a href="#Taxation" class="nav-link m-1" id="Taxation-tab" data-toggle="tab" role="tab" aria-controls="Taxation" aria-selected="false">
+                                    Taxation
+                                </a>
+                            </li>
+                            <li class="nav-item waves-effect waves-light">
+                                <a href="#Settings" class="nav-link m-1" id="Settings-tab" data-toggle="tab" role="tab" aria-controls="Settings" aria-selected="false">
+                                    Settings
+                                </a>
+                            </li>
+                            <li class="nav-item waves-effect waves-light">
+                                <a href="#Address" class="nav-link m-1" id="Address-tab" data-toggle="tab" role="tab" aria-controls="Address" aria-selected="false">
+                                    Address
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <br />
+                            <div class="tab-pane fade active show" id="Ledger" role="tabpanel" aria-labelledby="Ledger-tab">
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Name</label>
+                                            <input type="text" class="form-control" placeholder="Name" formControlName="Name">
+                                            <div class="alert alert-danger m-1" *ngIf="masterLedgerFrm.get('Name').hasError('required') && formSubmitAttempt">
+                                                Name is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">UnderGroup Master </label>
+                                            <select class="form-control" placeholder="UnderGroupMaster" formControlName="AccountTypeId">
+                                                <!-- <option value=""></option>
+                                                <option>Test</option>
+                                                <option>Test1</option>
+                                                <option>Test2</option>
+                                                <option>Test3</option> -->
+                                                <option *ngFor="let accountTypes of accountTypes" value={{accountTypes.Id}}>{{accountTypes.Name}}</option>
+                                            </select>
+                                            <div class="alert alert-danger" *ngIf="masterLedgerFrm.get('UnderGroupMaster').hasError('required') && formSubmitAttempt">
+                                                UnderGroupMaster is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Select Dr/Cr</label>
+                                            <select class="form-control" formControlName="DRCR">
+                                                <option *ngFor="let entityList of entityLists" [ngValue]="entityList.name">{{ entityList.name }}</option>
+                                            </select>
+                                            <div *ngIf="masterLedgerFrm.get('DRCR').hasError('required') && formSubmitAttempt" class="alert alert-danger">
+                                                Select Dr/Cr
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Amount</label>
+                                            <input type="text" name="Amount" ng-model="settingFrm.Amount" class="form-control" formControlName="Amount" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="InventoryValue" id="InventoryValue" ng-model="masterLedgerFrm.InventoryValue" formControlName="InventoryValue">
+                                            <label class="form-check-label" for="InventoryValue">
+                                                Inventory values are Affected By ?
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="MaintainBilByBill" id="MaintainBilByBill" ng-model="masterLedgerFrm.MaintainBilByBill" formControlName="MaintainBilByBill">
+                                            <label class="form-check-label" for="MaintainBilByBill">
+                                                Maintain balances bill by bill
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4" *ngIf="(masterLedgerFrm.value.AccountTypeId == 8) || (masterLedgerFrm.value.AccountTypeId == 12) ">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="AcceptCard" id="AcceptCard" ng-model="masterLedgerFrm.AcceptCard" formControlName="AcceptCard">
+                                            <label class="form-check-label" for="AcceptCard">
+                                                Accept Card
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- <div class="form-group">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">Name</label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control" placeholder="Name" formControlName="Name">
+                                            <div class="alert alert-danger" *ngIf="masterLedgerFrm.get('Name').hasError('required') && formSubmitAttempt">
+                                                Name is required
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">UnderGroup Master </label>
+                                        <div class="col-md-7">
+                                            <select class="form-control" placeholder="UnderGroupMaster" formControlName="UnderGroupMaster">
+                                                <option>Test</option>
+                                                <option>Test1</option>
+                                                <option>Test2</option>
+                                                <option>Test3</option>
+                                            </select>
+                                            <div class="alert alert-danger" *ngIf="masterLedgerFrm.get('UnderGroupMaster').hasError('required') && formSubmitAttempt">
+                                                UnderGroupMaster is required
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">
+
+                                            Inventory values are Affected By ?
+                                        </label>
+                                        <div class="col-md-1">
+                                            <input type="checkbox" name="InventoryValue" ng-Model="masterLedgerFrm.InventoryValue" class="form-control" formControlName="InventoryValue" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-5">
+                                            Maintain balances bill by bill
+                                        </label>
+                                        <div class="col-md-1">
+                                            <input type="checkbox" name="MaintainBilByBill" ng-Model="masterLedgerFrm.MaintainBilByBill" class="form-control" formControlName="MaintainBilByBill" />
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+
+                            <div class="tab-pane fade" id="Taxation" role="tabpanel" aria-labelledby="Taxation-tab">
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Tax Classification Name</label>
+                                            <select class="form-control" placeholder="TaxClassificationName" formControlName="TaxClassificationName">
+                                                <option>Test</option>
+                                                <option>Test1</option>
+                                                <option>Test2</option>
+                                                <option>Test3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Tax Type</label>
+                                            <select class="form-control" placeholder="TaxType" formControlName="TaxType">
+                                                <option>Test</option>
+                                                <option>Test1</option>
+                                                <option>Test2</option>
+                                                <option>Test3</option>
+                                            </select>
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('TaxType').hasError('required') && formSubmitAttempt">
+                                                TaxType is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Tax Rate</label>
+                                            <select class="form-control" placeholder="TaxRate" formControlName="TaxRate">
+                                                <option>Test</option>
+                                                <option>Test1</option>
+                                                <option>Test2</option>
+                                                <option>Test3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Nature of Purchase</label>
+                                            <select class="form-control" placeholder="NatureOfPurchase" formControlName="TraderLedNatureOfPurchase">
+                                                <option>Test</option>
+                                                <option>Test1</option>
+                                                <option>Test2</option>
+                                                <option>Test3</option>
+                                            </select>
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('TraderLedNatureOfPurchase').hasError('required') && formSubmitAttempt">
+                                                TraderLedNatureOfPurchase is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">TDS Deductee Type</label>
+                                            <select class="form-control" placeholder="TDSDeducteeType" formControlName="TDSDeducteeType">
+                                                <option>Test</option>
+                                                <option>Test1</option>
+                                                <option>Test2</option>
+                                                <option>Test3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">TDS Rate Name</label>
+                                            <select class="form-control" placeholder="TDSRateName" formControlName="TDSRateName">
+                                                <option>Test</option>
+                                                <option>Test1</option>
+                                                <option>Test2</option>
+                                                <option>Test3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane fade" id="Address" role="tabpanel" aria-labelledby="Address-tab">
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label"> Address</label>
+                                            <input type="text" class="form-control" placeholder="Address" formControlName="Address">
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('Address').hasError('required') && formSubmitAttempt">
+                                                Address is required
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">District</label>
+                                            <input type="text" class="form-control" placeholder="District" formControlName="District">
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('District').hasError('required') && formSubmitAttempt">
+                                                District is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">City</label>
+                                            <input type="text" class="form-control" placeholder="City" formControlName="City" />
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('City').hasError('required') && formSubmitAttempt">
+                                                City is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Street</label>
+                                            <input type="text" class="form-control" placeholder="Street" formControlName="Street" />
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('Street').hasError('required') && formSubmitAttempt">
+                                                Street is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">PanNo</label>
+                                            <input type="text" class="form-control" placeholder="PanNo" formControlName="PanNo" />
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('PanNo').hasError('required') && formSubmitAttempt">
+                                                PanNo is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Telephone</label>
+                                            <input type="text" class="form-control" placeholder="Telephone" formControlName="Telephone" />
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('Telephone').hasError('required') && formSubmitAttempt">
+                                                Telephone is required
+                                            </div>
+        
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Email</label>
+                                            <input type="text" class="form-control" placeholder="Email" formControlName="Email" />
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('Email').hasError('required') && formSubmitAttempt">
+                                                Email is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Currency</label>
+                                            <input type="text" class="form-control" placeholder="Currency" formControlName="Currency" />
+                                            <div class="alert alert-danger mt-1" *ngIf="masterLedgerFrm.get('Currency').hasError('required') && formSubmitAttempt">
+                                                Currency is required
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane fade" id="Settings" role="tabpanel" aria-labelledby="Settings-tab">
+                                <div class="row m-0">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsBillWiseOn" id="IsBillWiseOn" ng-model="masterLedgerFrm.IsBillWiseOn" formControlName="IsBillWiseOn">
+                                            <label class="form-check-label" for="IsBillWiseOn">
+                                                Bill Wise On
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="ISCostCentresOn" id="ISCostCentresOn" ng-model="masterLedgerFrm.ISCostCentresOn" formControlName="ISCostCentresOn">
+                                            <label class="form-check-label" for="ISCostCentresOn">
+                                                Cost Centres On
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsInterestOn" id="IsInterestOn" ng-model="masterLedgerFrm.IsInterestOn" formControlName="IsInterestOn">
+                                            <label class="form-check-label" for="IsInterestOn">
+                                                Interest On
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-1">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="AllowInMobile" id="AllowInMobile" ng-model="masterLedgerFrm.AllowInMobile" formControlName="AllowInMobile">
+                                            <label class="form-check-label" for="AllowInMobile">
+                                                Allow InMobile
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsCondensed" id="IsCondensed" ng-model="masterLedgerFrm.IsCondensed" formControlName="IsCondensed">
+                                            <label class="form-check-label" for="IsCondensed">
+                                                Condensed
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="AffectsStock" id="AffectsStock" ng-model="masterLedgerFrm.AffectsStock" formControlName="AffectsStock">
+                                            <label class="form-check-label" for="AffectsStock">
+                                                Affects Stock
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-1">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="ForPayRoll" id="ForPayRoll" ng-model="masterLedgerFrm.ForPayRoll" formControlName="ForPayRoll">
+                                            <label class="form-check-label" for="ForPayRoll">
+                                                For PayRoll
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="InterestOnBillWise" id="InterestOnBillWise" ng-model="masterLedgerFrm.InterestOnBillWise" formControlName="InterestOnBillWise">
+                                            <label class="form-check-label" for="InterestOnBillWise">
+                                                Interest On Bill Wise
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="OverRideInterest" id="OverRideInterest" ng-model="masterLedgerFrm.OverRideInterest" formControlName="OverRideInterest">
+                                            <label class="form-check-label" for="OverRideInterest">
+                                                OverRide Interest
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-1">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="OverRideADVInterest" id="OverRideADVInterest" ng-model="masterLedgerFrm.OverRideADVInterest" formControlName="OverRideADVInterest">
+                                            <label class="form-check-label" for="OverRideADVInterest">
+                                                OverRide ADV Interest
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="UseForVat" id="UseForVat" ng-model="masterLedgerFrm.UseForVat" formControlName="UseForVat">
+                                            <label class="form-check-label" for="UseForVat">
+                                                Use For VAT
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IgnoreTDSExempt" id="IgnoreTDSExempt" ng-model="masterLedgerFrm.IgnoreTDSExempt" formControlName="IgnoreTDSExempt">
+                                            <label class="form-check-label" for="IgnoreTDSExempt">
+                                                Ignore TDS Exempt
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-1">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsTCSApplicable" id="IsTCSApplicable" ng-model="masterLedgerFrm.IsTCSApplicable" formControlName="IsTCSApplicable">
+                                            <label class="form-check-label" for="IsTCSApplicable">
+                                                Is TCS Applicable
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsTDSApplicable" id="IsTDSApplicable" ng-model="masterLedgerFrm.IsTDSApplicable" formControlName="IsTDSApplicable">
+                                            <label class="form-check-label" for="IsTDSApplicable">
+                                                Is TDS Applicable
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsFBTApplicable" id="IsFBTApplicable" ng-model="masterLedgerFrm.IsFBTApplicable" formControlName="IsFBTApplicable">
+                                            <label class="form-check-label" for="IsFBTApplicable">
+                                                Is FBT Applicable
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-1">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsGSTApplicable" id="IsGSTApplicable" ng-model="masterLedgerFrm.IsGSTApplicable" formControlName="IsGSTApplicable">
+                                            <label class="form-check-label" for="IsGSTApplicable">
+                                                Is GST Applicable
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="ShowInPaySlip" id="ShowInPaySlip" ng-model="masterLedgerFrm.ShowInPaySlip" formControlName="ShowInPaySlip">
+                                            <label class="form-check-label" for="ShowInPaySlip">
+                                                Show In PaySlip
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="UseForGratuity" id="UseForGratuity" ng-model="masterLedgerFrm.UseForGratuity" formControlName="UseForGratuity">
+                                            <label class="form-check-label" for="UseForGratuity">
+                                                Use For Gratuity
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-1">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="ForServiceTax" id="ForServiceTax" ng-model="masterLedgerFrm.ForServiceTax" formControlName="ForServiceTax">
+                                            <label class="form-check-label" for="ForServiceTax">
+                                                For ServiceTax
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsInputCredit" id="IsInputCredit" ng-model="masterLedgerFrm.IsInputCredit" formControlName="IsInputCredit">
+                                            <label class="form-check-label" for="IsInputCredit">
+                                                Is InputCredit
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsExempte" id="IsExempte" ng-model="masterLedgerFrm.IsExempte" formControlName="IsExempte">
+                                            <label class="form-check-label" for="IsExempte">
+                                                Is Exempte
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-1">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="IsAbatementApplicable" id="IsAbatementApplicable" ng-model="masterLedgerFrm.IsAbatementApplicable" formControlName="IsAbatementApplicable">
+                                            <label class="form-check-label" for="IsAbatementApplicable">
+                                                Is Abatement Applicable
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="TDSDeducteeIsSpecialRate" id="TDSDeducteeIsSpecialRate" ng-model="masterLedgerFrm.TDSDeducteeIsSpecialRate" formControlName="TDSDeducteeIsSpecialRate">
+                                            <label class="form-check-label" for="TDSDeducteeIsSpecialRate">
+                                                TDS Deductee Is SpecialRate
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  name="Audited" id="Audited" ng-model="masterLedgerFrm.Audited" formControlName="Audited">
+                                            <label class="form-check-label" for="Audited">
+                                                Audited
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <!-- <div class="form-group">
+                        <label class="control-label col-md-5">Amount</label>
+                        <div class="col-md-7">
+                            <input type="text" name="Amount" ng-model="settingFrm.Amount" class="form-control" formControlName="Amount" />
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!-- <button class="btn btn-success" [disabled]="buttonDisabled" (click)="reset()">Save</button>
+            <button type="submit" class="btn btn-success pull-left">Save </button> -->
+            <div>
+                <button type="button" class="btn btn-danger pull-right ml-2" [disabled]="buttonDisabled" (click)="reset()">Cancel</button>
+                <button type="submit" class="btn btn-success pull-left">{{modalBtnTitle}} </button>
+            </div>
+        </div>
+    </form>
+
+</ng-template>

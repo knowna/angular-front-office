@@ -1,0 +1,153 @@
+<div class="container no-print" style="padding-top: 20px;">
+    <div class="card">
+        <div class="card-body">
+          <div class="row m-0 mt-3">
+            <div class="col-md-4">
+              <h2 class="header">Departments</h2>
+            </div>
+          </div>
+          <hr>
+    
+          <div class="row" *ngIf="showLoader">
+            <div class="col-md-12" style="height:300px">
+              <div class="loader"></div>
+            </div>
+          </div>
+    
+          <div class="row m-0 mt-4 departments" *ngIf="departments && !showLoader">
+            <div class="col-md-12 col-sm-12">
+              <div class="department">
+                <ul>
+                  <li 
+                    *ngFor="let department of departments" 
+                    (click)="selectDepartment(department)"
+                    class="item"
+                    [class.selected]="selectedDepartment == department">
+                    {{department.Name}}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="card mt-5">
+        <div class="card-body">
+            <div class="row m-0 mt-3">
+                <div class="col-md-4">
+                    <h2 class="header">Orders</h2>
+                </div>
+            </div>
+            
+            <hr>
+
+            <div *ngFor="let order of orderList;index as i">
+                <table class="table table-bordered">
+                    <!-- <caption style="caption-side:top">
+                        Order No: {{order.orderNumber}} {{order.itemList[0].TableNo}}
+                        <button type="button" class="btn btn-secondary btn-sm" (click)="printOrder(order)">
+                            <i class="fa fa-print"></i>
+                        </button>
+                    </caption> -->
+                    <thead>
+                        <tr>
+                            <th>
+                                <button type="button" class="btn btn-secondary btn-sm" (click)="printOrder(order)">
+                                    <i class="fa fa-print"></i>
+                                </button>
+                            </th>
+                            <th>
+                                Order No: {{order.orderNumber}}
+                            </th>
+                            <th colspan="2">
+                                Table No: {{order.itemList[0].TableNo}}
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>S.N</th>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of order.itemList;index as j">
+                            <td>{{j+1}}</td>
+                            <td>{{ getProductById(productList, item.ItemId)?.Name }}</td>
+                            <td>{{item.Qty}}</td>
+                            <td>{{item.OrderDescription}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div *ngIf="orderList.length == 0" class="text-center">
+                No orders found !
+              </div>
+
+        </div>
+    </div>
+</div>
+
+<iframe id='iframePrint' frameborder="0" name='fancyiframe' style="visibility: hidden;height:0px;width:0px;"></iframe>
+
+<div class="row">
+    <div class="col-12 d-none d-print-block printable" style="width: 100mm;margin: 0;">
+        <table class="table table-bordered" style="width:450px">
+            <thead>
+                <tr>
+                    <th colspan="4" align="center" style="text-align:center">
+                        <span class="font-weight-bold mb-2">Order Ticket</span>
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        <span class="text-center font-weight-bold">
+                            Order No : {{selectedOrder.orderNumber}}
+                        </span>
+                    </th>
+                    <th colspan="2" align="right">
+                        <span class="text-center font-weight-bold">
+                            Date : {{selectedOrder.TicketOpeningTime | date :'dd MMM yyyy' }}
+                        </span>
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        <span class="text-center font-weight-bold">
+                            Table No : {{selectedOrder.TableNo}}
+                        </span>
+                    </th>
+                    <th colspan="2" align="right">
+                        <span class="text-center font-weight-bold">
+                            Time : {{selectedOrder.TicketOpeningTime | date :'hh:mm a' }}
+                        </span>
+                    </th>
+                </tr>
+                <tr>
+                    <th width="20px">S. No. </th>
+                    <th width="100px">Item Name</th>
+                    <th width="80px">Qty</th>
+                    <th width="250px">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of selectedOrder.itemList; let i = index ">
+                    <td width="20px">
+                        {{i + 1}}
+                    </td>
+                    <td align="left" width="100px">
+                        <span>{{ getProductById(productList, item.ItemId)?.Name }}</span>
+                    </td>
+                    <td align="right" width="80px">
+                        <strong>{{ item.Qty }}</strong>
+                    </td>
+                    <td align="left" width="250px">
+                        {{item.OrderDescription}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,269 @@
+﻿<div class="container" style="padding-top: 20px;">
+    <div class="row m-0 mt-3">
+        <div class="col-md-4">
+            <h2 class="header">Manage Roles</h2>
+        </div>
+        <div class="col-md-4">
+            <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search by Name"
+                (keyup)="searchItem()" 
+                [(ngModel)]="searchKeyword" >
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-success" (click)="addRoles()" style="float: right">
+                <strong>
+                    <i class="fa fa-plus"></i>
+                    Add
+                </strong>
+            </button>
+        </div>
+    </div>
+
+    <div class="row m-0 mt-2">
+        <div class="col-sm-12 table-responsive">
+            <div class="alert alert-info" role="alert" *ngIf="indLoading">
+                <img src="../../../../assets/images/loading.gif" width="32" height="32" /> Loading...
+            </div>
+            <table class='table table-bordered' *ngIf='roles && roles.length'>
+                <thead>
+                    <tr>
+                        <!-- <th>Role Name</th> -->
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let role of roles">
+                        <!-- <td>{{role.RoleName}}</td> -->
+                        <td>{{role.Name}}</td>
+                        <td>{{role.Description}}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" (click)="editUserRole(role.Id)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm ml-2" (click)="deleteUserRole(role.Id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            <!-- <span>
+                                <img src="../../../../assets/images/EditUser.png" (click)="editUserRole(role.RoleId)" height="32" width="32" style="cursor: pointer;" />
+                            </span>
+                            <span>
+                                <img src="../../../../assets/images/DeleteUser.png" (click)="deleteUserRole(role.RoleId)" height="32" width="32" style="cursor: pointer;" />
+                            </span> -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf='roles && roles.length==0' class="alert alert-info" role="alert">No record found!</div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- <div class="container">
+    <div class='panel panel-primary'>
+        <div class='panel-heading'>
+            Manage Roles
+        </div>
+        <div class='panel-body'>
+            <div class='table-responsive'>
+                <div style="padding-bottom:10px">
+                    <img src="../../../../assets/images/UserAdd.png" (click)="addRoles()" height="60" width="60" style="cursor: pointer;" />
+                </div>
+                <div class="alert alert-info" role="alert" *ngIf="indLoading">
+                    <img src="../../../../assets/images/loading.gif" width="32" height="32" /> Loading...
+                </div>
+                <div *ngIf='roles && roles.length==0' class="alert alert-info" role="alert">No record found!</div>
+                <table  *ngIf='roles && roles.length'>
+                    <thead>
+                        <tr>
+                            <th>Role Name</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let role of roles">
+                            <td>{{role.RoleName}}</td>
+                            <td>{{role.Description}}</td>
+                            <td>
+                                <span>
+                                    <img src="../../../../assets/images/EditUser.png" (click)="editUserRole(role.RoleId)" height="32" width="32" style="cursor: pointer;" />
+                                </span>
+                                <span>
+                                    <img src="../../../../assets/images/DeleteUser.png" (click)="deleteUserRole(role.RoleId)" height="32" width="32" style="cursor: pointer;" />
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<ng-template #template>
+    <form class="panel-primary" novalidate (ngSubmit)="onSubmit(RoleFrm)" [formGroup]="RoleFrm">
+        <div class="modal-header" style="background-color: #364a70;">
+            <h4 class="modal-title pull-left">{{modalTitle}}</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Role Name</label>
+                        <input type="text" class="form-control" placeholder="Role Name" formControlName="Name">
+                        <div class="alert alert-danger mt-1" *ngIf="RoleFrm.get('Name').hasError('required') && formSubmitAttempt">
+                            Role name is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Description</label>
+                        <textarea class="form-control" name="Description" formControlName="Description" rows="1" placeholder="Add description here..."></textarea>
+                        <div class="alert alert-danger mt-1" *ngIf="RoleFrm.get('Description').hasError('required') && formSubmitAttempt">
+                            Description is required.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <!-- <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Description</label>
+                        <textarea class="form-control" name="Description" formControlName="Description" rows="4" placeholder="Add description here..."></textarea>
+                        <div class="alert alert-danger mt-1" *ngIf="RoleFrm.get('Description').hasError('required') && formSubmitAttempt">
+                            Description is required.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br /> -->
+
+
+            <label class="control-label">Permission</label>
+
+            <div *ngFor="let item of items;index as i" class="row m-0">
+                <div class="col-md-12">
+
+                    <div class="ml-2 mt-3">
+                        <h5><b>{{ item?.title}}</b> </h5>
+                    </div>
+
+                    <div class="col-md-12 mt-4" *ngFor="let child of item.children;index as j">
+                        
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input"
+                                *ngIf="!child.children" 
+                                (change)="changePermission(child.permission)"
+                                [checked]="hasPermission(child.permission)"
+                                [id]="'first'+i+j"
+                                type="checkbox">
+                            <label class="form-check-label" [for]="'first'+i+j">
+                                <b>{{ child?.title}} </b>
+                            </label>
+
+                        </div>
+
+                        <div class="row m-0">
+                            <div *ngFor="let chil of child.children;index as k" class="col-md-3">
+                                <div class="form-check ml-2">
+                                    <input 
+                                        class="form-check-input" 
+                                        type="checkbox" 
+                                        [id]="'second'+i+j+k"
+                                        (change)="changePermission(chil.permission)"
+                                        [checked]="hasPermission(chil.permission)">
+                                    <label class="form-check-label" [for]="'second'+i+j+k">
+                                        {{chil?.title}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <hr>            
+                </div>
+                <!-- <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"  name="Add" id="Add" ng-model="RoleFrm.IsAdd" formControlName="IsAdd">
+                        <label class="form-check-label" for="Add">
+                            Add
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"  name="Edit" id="Edit" ng-model="RoleFrm.IsEdit" formControlName="IsEdit">
+                        <label class="form-check-label" for="Edit">
+                            Edit
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"  name="Delete" id="Delete" ng-model="RoleFrm.IsDelete" formControlName="IsDelete">
+                        <label class="form-check-label" for="Delete">
+                            Delete
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-3"> -->
+                    <!-- <div clas="form-check">
+                        <input class="form-check-input" type="checkbox"  name="View" id="View" ng-model="RoleFrm.IsView" formControlName="IsView">
+                        <label class="form-check-label" for="View">
+                            View
+                        </label>
+                    </div> -->
+                <!-- </div> -->
+                <!-- <div class="col-md-8">
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Add</label>
+                        <input style="margin-left: 25px; margin-top: -30px" type="checkbox" name="Selected" ng-model="RoleFrm.Selected" class="form-control" formControlName="Selected" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Edit</label>
+                        <input style="margin-left: 25px; margin-top: -30px" type="checkbox" name="Selected" ng-model="RoleFrm.Selected" class="form-control" formControlName="Selected" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">Delete</label>
+                        <input style="margin-left: 35px; margin-top: -30px" type="checkbox" name="Selected" ng-model="RoleFrm.Selected" class="form-control" formControlName="Selected" />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="control-label">View</label>
+                        <input style="margin-left: 25px; margin-top: -30px" type="checkbox" name="Selected" ng-model="RoleFrm.Selected" class="form-control" formControlName="Selected" />
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div>
+                <button type="button" class="btn btn-danger pull-right ml-2" [disabled]="buttonDisabled" (click)="modalRef.hide();">Cancel</button>
+                <button type="submit" class="btn btn-success pull-left">{{modalBtnTitle}} </button>
+            </div>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #templateNested>
+    <div class="modal-body text-center">
+        <p>Data saved sucessfully!</p>
+        <button type="button" class="btn btn-default" (click)="confirm()">Ok</button>
+    </div>
+</ng-template>

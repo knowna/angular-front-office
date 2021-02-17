@@ -1,0 +1,36 @@
+<div class="card">
+    <div class="card-header no-radius">
+        <div class="row">
+            <div class="col-md-5 text-left">
+                <span><strong>Available Tickets</strong></span>
+            </div>
+            <div class="col-md-7 text-right">
+                <h6><strong>{{ customerId ? 'Customer: ' + (customer$ | async)?.CustomerName : 'Table: ' + table ? table?.Name : '' }}</strong></h6> 
+            </div>
+        </div>
+    </div>
+    <div class="card-body" style="min-height: 330px;">
+        <div class="tickets" *ngIf="isTicketEmpty !== true">
+            <div class="tickets__item" *ngFor="let ticket of tickets">
+                <div class="col-sm-12">
+                    <a href="javascript:void(0)" (click)="loadDetailView(ticket.Id ? ticket.Id : 0, customerId ? customerId : 0)">
+                        <div class="ticket text-white">
+                            <strong>#{{ ticket.TicketId }} {{ ticket.Name }}</strong>
+                        </div>
+                        <div class="price text-white">
+                            <strong>Rs. {{ ticket.TotalAmount }}</strong>
+                        </div>
+                    </a>
+                </div>
+                <!-- <a href="javascript:void(0)" (click)="loadDetailView(ticket.Id ? ticket.Id : 0, customerId ? customerId : 0)">
+                    <div class="col-md-7 pull-left">
+                        <strong>#{{ ticket.TicketId }} {{ ticket.Name }}</strong>
+                    </div>
+                    <div class="col-md-5 pull-right text-right">
+                        <strong>Rs. {{ ticket.TotalAmount }}</strong>
+                    </div>
+                </a> -->
+            </div>
+        </div>
+    </div>
+</div>

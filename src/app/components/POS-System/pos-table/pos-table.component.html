@@ -1,0 +1,147 @@
+
+<!-- <div class="loading" *ngIf="isLoading">
+    <div class="spinner"></div>
+</div> -->
+<div class="row m-0 mt-4">
+    <div class="col-md-2">
+        <h2 class="header"> Order</h2>
+    </div>
+    <div class="col-md-10">
+        <pos-options 
+            *ngIf="ordersNew"
+            [selectedItem]="selectedItem" 
+            [orders]="ordersNew" 
+            (showTicketNote)="showTicketNote()"
+            (createNewTicket)="createNewTicket()"
+            (printBill)="printBill()" 
+            (removeItem)="removeItem($event)" 
+            (voidItem)="voidItem($event)"
+            (incrementQty)="incrementDecrementQty($event,'increaseQuantity')"
+            (decrementQty)="incrementDecrementQty($event,'decreaseQuantity')"
+            (toogleGiftItem)="toogleGiftItem($event)"
+            (moveItems)="moveItems($event)">
+        </pos-options>
+    </div>
+</div>
+
+
+<div class="row m-3 mt-4" *ngIf="selectedCustomerId == 0">
+    <div class="col-md-12">
+        <h4 class="font-weight-bold">Table No : {{tableNew?.Name}}</h4>
+    </div>
+</div>
+
+<div [formGroup]="postableForm" class="row m-3 mt-2">
+    <div class="col-md-7 card" >
+        <div formArrayName="AccountTransactionValues">
+            <div class="row m-0 mt-3" *ngFor="let AccountTransactionValue of AccountTransactionValues.controls; let i=index" [formGroupName]="i">
+                <div class="col-sm-10">
+                    <div class="row m-0">
+                        <div class="col-sm-8">
+                            <label class="font-weight-bold">Menu Items</label>
+                            <ngx-select-dropdown
+                                (change)="selectionChanged($event,i)"
+                                [multiple]="false"
+                                [config]="config"
+                                formControlName="productId"
+                                [options]="productList">
+                            </ngx-select-dropdown>
+                            <!-- <small [hidden]="postableForm.controls.AccountTransactionValues.controls[i].controls.productId.valid" class="text-danger">
+                            Particular Name is required
+                            </small> -->
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="font-weight-bold">Quantity</label>
+                            <input type="number" class="form-control" placeholder="quantity" formControlName="quantity">
+                            <!-- <small [hidden]="postableForm.controls.AccountTransactionValues.controls[i].controls.quantity.valid" class="text-danger">
+                            quantity is required
+                            </small> -->
+                        </div>
+                    </div>
+                    
+                    <div class="row m-0">
+                        <div class="col-sm-12">
+                            <label class="font-weight-bold">Description</label>
+                            <textarea name="description" class="form-control" formControlName="description" rows="1" cols="20"></textarea>
+                        </div>
+                    </div>
+                </div>
+                    
+                <div class="col-sm-2 mt-4" *ngIf="AccountTransactionValues.controls.length > 1">
+                    <button class="btn btn-danger" (click)="removeTrackerModel(i)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row m-0 mt-5">
+                <div class="col-sm-12">
+                    <div class="row m-0">
+                        <div class="col-sm-2">
+                            <button
+                            class="btn bg-blue" (click)="addCategory()" [disabled]="!AccountTransactionValues.valid">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-2">
+                <button (click)="createOrder()"  style="float:right" class="btn btn-success" [disabled]="!AccountTransactionValues.valid" *ngIf="!createOrderLoader">
+                    Create Order
+                </button>
+                <button  style="float:right" class="btn btn-success" *ngIf="createOrderLoader">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Creating Order
+                </button>
+                <!-- <button class="btn btn-secondary">Cancel Order</button> -->
+            </div>
+        </div>
+
+        <div class="row m-2">
+            <div class="col-sm-10">
+                <label class="font-weight-bold">Ticket Note:</label>
+                <div *ngIf="!enableTicketNote">
+                    {{ postableForm.value.ticketNote}}
+                </div>
+                <div *ngIf="enableTicketNote">
+                    <textarea name="ticketNote" class="form-control" formControlName="ticketNote" rows="1" cols="20"></textarea>
+                    <button class="btn btn-success mt-3" (click)="saveTicketNote(ticket.Id)">Save Ticket Note</button>
+                </div>
+
+                <!-- <p style="margin-top: 4px;">
+                    <strong>Ticket Note:</strong>
+                </p>
+                <div *ngIf="!enableTicketNote">
+                    {{ postableForm.value.ticketNote}}
+                </div>
+                <div *ngIf="enableTicketNote">
+                    <textarea formControlName="ticketNote" placeholder="Enter Note Here..." style="margin-top: 14px;margin-left: -4px; min-height:200px;"></textarea>
+                    <br />
+                    <button class="btn btn-success" (click)="saveTicketNote(ticket.Id)">Save Ticket Note</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <pos-tickets [table]="table"
+                     [toOpenTicketId]="toOpenTicketId"
+                     *ngIf="checkTicket()">
+        </pos-tickets>
+
+
+
+        <pos-orders  *ngIf="selectedTicket && (ordersNew.length > 0) && (productList.length > 0)" 
+                    [table]="tableNew"
+                    [ticket]="ticket$ | async"
+                    [products]="productList"
+                    [orders]="ordersNew"
+                    [selectedTable]="selectedTable ? selectedTable : ''"
+                    [selectedCustomerId]="selectedCustomerId"
+                    (selectOrderItem)="selectOrderItem($event)"
+                    (printBill)="printBill()">
+        </pos-orders>
+    </div>
+</div>
+
+<!-- *ngIf="selectedTicket && tableNew  && (ordersNew.length > 0) && (productList.length > 0)" -->

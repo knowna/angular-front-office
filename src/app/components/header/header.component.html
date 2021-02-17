@@ -1,0 +1,121 @@
+<!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet"> -->
+<aside class="main-sidebar" [class.wid]="closeSidebar">
+    <section class="sidebar">
+        <ul class="sidebar-menu tree" data-widget="tree" *ngFor="let item of (items | LinksFilter) ">
+            <li class="treeview mb-1" [class.group]="item.group">
+                <a  (click)="item.show = !item.show">
+                    <span>
+                        <img  [src]="item.img" height="30px" width="30px" class="mr-1">{{item?.title}}</span>
+                    <i  
+                        class="fa icon"
+                        [class.fa-chevron-left]="!item.show"
+                        [class.fa-chevron-down]="item.show"
+                        *ngIf="item.children?.length>0 && !closeSidebar ">
+                    </i>
+
+                    <!-- <i [ngClass]="item.icon" class="fa pull-left"></i>
+
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i> -->
+                    <!-- </span> -->
+                </a>
+
+                <ul *ngIf="item.show && !closeSidebar" class="sidebar-menu tree">
+                    <li class="treeview mb-1 ml-2" *ngFor="let child of (item.children | LinksFilter)">
+                        <a (click)="child.show = !child.show">
+                            <span (click)="open(child.link)"> 
+                                <!-- <img  [src]="child.img" height="30px" width="30px" >  -->
+                                {{child.title}}
+                            </span>
+                            <i 
+                                class="fa icon"
+                                [class.fa-chevron-left]="!child.show"
+                                [class.fa-chevron-down]="child.show"
+                                *ngIf="child.children?.length > 0">
+                            </i>
+                            <!-- <i [ngClass]="child.icon" class="fa  pull-left"></i>
+                            <i class="fa fa-angle-left pull-right"></i>  -->
+                        </a>
+
+                        <ul *ngIf="child.show && !closeSidebar" class="sidebar-menu tree">
+                            <li class="treeview mb-1 ml-4" *ngFor="let chil of (child.children | LinksFilter)">
+                                <a (click)=open(chil.link) *ngIf="chil.display">
+                                    <!-- <img  [src]="chil.img" height="30px" width="30px" >  -->
+                                    {{chil?.title}}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- <ng-template #elseBlockk>
+                    <a (click)=open(item.link)>
+                        <i class=""></i> <span class="coloring">{{item?.title}}</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </ng-template>
+                <ul class="treeview-menu second " data-widget="second">
+                    <div *ngFor="let child of (item.children | LinksFilter)">
+                        <li class="treeview">
+                            <a href="#" class="flexing" *ngIf="child.children; else elseBlock">
+                                <i [ngClass]="child.icon" class="fa  pull-left"></i><span
+                                    class="textleft">{{child?.title}}</span><span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span></a>
+                            <ng-template #elseBlock>
+                                <a (click)=open(child.link)>
+                                    <i class=""></i> <span class="anothersecond">{{child?.title}}</span>
+                                    <span class="pull-right-container">
+
+                                    </span>
+                                </a>
+                            </ng-template>
+                            <ul class="treeview-menu">
+                                <div *ngFor="let chil of (child.children |LinksFilter)">
+                                    <a (click)=open(chil.link)>
+                                        <li class="treeview secondinner">
+
+                                            <i class=""></i><span>{{chil?.title}}</span><span
+                                                class="pull-right-container">
+                                                <i class=""></i>
+                                            </span>
+
+                                        </li>
+                                    </a>
+                                </div>
+
+                            </ul>
+
+                        </li>
+
+
+                    </div>
+
+                </ul> -->
+
+            </li>
+
+        </ul>
+
+    </section>
+    <!-- <i (click)="closeSidebar = !closeSidebar " style="bottom:10px;position:fixed;margin-left: 10px;" class="fa fa-bars"></i> -->
+
+</aside>
+
+
+
+<style>
+    /* .treeview{
+    padding-top:3px;
+    padding-bottom:3px;
+    border-bottom:1px solid rgba(255,255,255,.1)
+} */
+    .group {
+        border: 'none';
+        background-color: 'white';
+        font-size: "1.2em";
+        color: "blue";
+        letter-spacing: ".1em";
+    }
+</style>

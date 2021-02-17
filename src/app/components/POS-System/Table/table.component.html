@@ -1,0 +1,204 @@
+﻿<!-- <div class='panel panel-primary'>
+    <div class='panel-heading'>
+        Tables and Floor Planning
+    </div>
+    <div class='panel-body'>
+        <div class='table-responsive'>
+            <div style="padding-bottom:10px">
+                <img src="../../../../assets/images/Add.png" (click)="openModal(template)" height="60" width="60" />
+                <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../../../assets/images/loading.gif" width="32" height="32" /> Loading...</div>
+                <div *ngIf='tables && tables.length==0' class="alert alert-info" role="alert">No record found!</div>
+                <table  *ngIf='tables && tables.length'>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let table of tables">
+                            <td>{{table.Name}}</td>
+                            <td>
+                                <span><img src="../../../../assets/images/Edit.png" (click)="editTable(table.Id,template)" height="32" width="32" /></span>
+                                <span><img src="../../../../assets/images/Delete.png" (click)="deleteTable(table.Id,template)" height="32" width="32" /></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div *ngIf='tables && tables.length>=10' style="padding-bottom:10px"><img src="../../../../assets/images/Add.png" (click)="openModal(template)" height="60" width="60" /></div>
+            </div>
+            <div *ngIf="msg" role="alert" class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                {{msg}}
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="container" style="padding-top: 20px;">
+    <!-- <div class="row m-0">
+        <div class="col-sm-12">
+            <h4> Tables and Floor Planning</h4>
+        </div>
+    </div> -->
+  
+    <div class="row m-0 mt-3">
+        <div class="col-md-4">
+            <!-- <h4>Table/Floor/Room Setup</h4> -->
+            <h2 class="header mt-3">Table/Floor/Room Setup</h2>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" [(ngModel)]="tableName" placeholder="Search by Table Name">
+        </div>
+        <!-- <div class="col-md-6">
+        </div> -->
+        <div class="col-md-4">
+            <button class="btn btn-success" (click)="openModal(template)" style="float: right">
+                <strong>
+                    <i class="fa fa-plus"></i>
+                    Add
+                </strong>
+            </button>
+        </div>
+    </div>
+    <div class="row m-0 mt-2">
+        <div class="col-sm-12 table-responsive">
+            <table class='table table-bordered' *ngIf='tables && tables.length'>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Table/Room Type</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let table of tables | TableFilter : tableName">
+                        <td>
+                            <img [src]="'data:image/png;base64,'+table.PhoteIdentity" alt="" height="30" width="30">
+                        </td>
+                        <td>{{table.Name}}</td>
+                        <td>
+                            {{ getDepartment(departments,table.DepartmentId)?.Name }}
+                        </td>
+                        <td>
+                            {{ getTableType(roomTypes,table.TableTypeId)?.Name }}
+                        </td>
+                        <td>{{table.Description}}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" (click)="editTable(table.Id,template)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm ml-2" (click)="deleteTable(table.Id,template)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            <!-- <span><img src="../../../../assets/images/Edit.png" (click)="editTable(table.Id,template)" height="32" width="32" /></span>
+                            <span><img src="../../../../assets/images/Delete.png" (click)="deleteTable(table.Id,template)" height="32" width="32" /></span> -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../../../assets/images/loading.gif" width="32" height="32" /> Loading...</div>
+            <div *ngIf='tables && tables.length==0' class="alert alert-info" role="alert">No record found!</div>
+        </div>
+    </div>
+</div>
+
+<ng-template #template>
+    <form class="panel-primary" novalidate (ngSubmit)="onSubmit(TableForm,fileUpload)" [formGroup]="TableForm">
+        <div class="modal-header panel-heading">
+            <h4 class="modal-title pull-left">{{modalTitle}}</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row m-0">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label">Name:</label>
+                        <input type="text" class="form-control" placeholder="" formControlName="Name">
+                        <div class="alert alert-danger mt-1" *ngIf="TableForm.get('Name').hasError('required') && formSubmitAttempt">
+                            Name is required
+                        </div>
+                    </div>
+                </div>
+
+                <!-- roomTypes -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label">Table/Room Type</label>
+                        <select class="form-control p-0" formControlName="TableTypeId">
+                            <option *ngFor="let room of roomTypes" [value]="room.Id">{{room.Name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row m-0">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label">Department</label>
+                        <select class="form-control p-0" formControlName="DepartmentId">
+                            <option *ngFor="let dep of departments" [value]="dep.Id">{{dep.Name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label">Description</label>
+                        <input type="text" class="form-control" placeholder="" formControlName="Description">
+                        <div class="alert alert-danger" *ngIf="TableForm.get('Description').hasError('required') && formSubmitAttempt">
+                            Description is required
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="row m-0 mt-4">
+                <div class="col-sm-10">
+                    Upload Image  <app-file-upload #fileUpload  [uploadUrl]="uploadUrl" [dropMessage]="dropMessage"></app-file-upload>
+                </div>
+                
+                <!-- <div class="alert alert-danger mt-1" *ngIf="fileUpload.fileUpload == null">
+                    File is required
+                </div> -->
+
+                <div *ngIf="modalTitle != 'Add'" class="col-sm-6">
+                    <img [src]="'data:image/png;base64,'+TableForm.value.PhoteIdentity" alt="" height="50" width="50">
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!-- <button 
+                type="button"
+                class="btn btn-default"
+                (click)="modalRef.hide()">
+                Cancel
+            </button> -->
+            <button 
+                type="submit"
+                class="btn btn-success"
+                ngbAutofocus>
+                {{modalBtnTitle}}
+            </button>
+            <button 
+                type="button"
+                class="btn btn-danger"
+                (click)="modalRef.hide()">
+                Cancel
+            </button>
+            <!-- <div>
+                <button type="submit" class="btn btn-success pull-left">{{modalBtnTitle}}</button>
+                <a class="btn btn-danger pull-right" (click)="modalRef.hide()">Cancel</a>
+            </div> -->
+        </div>
+    </form>
+</ng-template>
+
