@@ -7,15 +7,21 @@
 
     <div class="row m-0 mt-2">
         <div class="col-md-2">
+            <button (click)="openModal(template)" class="btn btn-success">
+                <i class="fa fa-plus"></i>
+                Add
+            </button>
+        </div>
+        <div class="col-md-2">
             Filter By Date:
         </div>
         <div class="col-md-2">
             <input class="form-control" placeholder="dd/MM/yyyy" bsDatepicker [(ngModel)]="fromDate" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }" />
         </div>
-        <div class="col-md-2">
+        <div class="col-md-1">
             <button class="btn btn-success" (click)="getDataDateFilter()"> GO</button>
         </div>
-        <div class="col-md-4 d-flex">
+        <div class="col-md-3 d-flex">
             <button (click)="getData('today')" class="btn btn-success">
                 <i class="fa fa-clock"></i> Today
             </button>
