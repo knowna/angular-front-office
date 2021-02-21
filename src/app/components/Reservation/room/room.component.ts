@@ -17,6 +17,7 @@ import { FacilityService } from 'src/app/Service/reservation/facility.services';
 
 export class RoomComponent implements OnInit {
     rooms: Room[];
+    tempRooms: any[];
     roomTypes: RoomType[];
     room: Room;
     msg: string;
@@ -27,6 +28,8 @@ export class RoomComponent implements OnInit {
     modalBtnTitle: string;
     modalRef: BsModalRef;
     private formSubmitAttempt: boolean;
+
+    searchKeyword ='';
 
     constructor(private fb: FormBuilder, private _roomService: FacilityService, private modalService: BsModalService) { }
 
@@ -45,14 +48,21 @@ export class RoomComponent implements OnInit {
     LoadRoomTypes(): void {
         this.isLoading = true;
         this._roomService.get(Global.BASE_ROOM_TYPES_ENDPOINT)
-            .subscribe(roomTypes => { this.roomTypes = roomTypes; this.isLoading = false; },
+            .subscribe(roomTypes => { 
+                this.roomTypes = roomTypes; 
+                this.isLoading = false; 
+            },
                 error => this.msg = <any>error);
     }
 
     LoadRooms(): void {
         this.isLoading = true;
         this._roomService.get(Global.BASE_RESERVATION_ROOM_ENDPOINT)
-            .subscribe(rooms => { this.rooms = rooms; this.isLoading = false; },
+            .subscribe(rooms => { 
+                this.rooms = rooms; 
+                this.tempRooms = rooms;
+                this.isLoading = false; 
+            },
                 error => this.msg = <any>error);
     }
 
@@ -78,7 +88,7 @@ export class RoomComponent implements OnInit {
     deleteRoom(id: number, template: TemplateRef<any>) {
         this.dbops = DBOperation.delete;
         this.SetControlsState(true);
-        this.modalTitle = "Delete Room";
+        this.modalTitle = "Delete Room ?";
         this.modalBtnTitle = "Delete";
         this.room = this.rooms.filter(x => x.Id == id)[0];
         this.roomForm.setValue(this.room);
@@ -177,5 +187,21 @@ export class RoomComponent implements OnInit {
         return this.roomTypes.length && this.roomTypes.filter((rType) => {
             return rType.Id === Id;
         })[0];
+    }
+
+    searchItem(){
+        let searchKeywordTrimmed = this.searchKeyword.trim();
+        if(searchKeywordTrimmed == '' || searchKeywordTrimmed == null ){
+            this.rooms = this.rooms;
+        }
+
+        let filteredRooms: any[] = [];
+
+        filteredRooms = this.tempRooms.filter(
+            room=>{
+                return (room.RoomNumber.toLowerCase().indexOf(searchKeywordTrimmed.toLowerCase()) !== -1);
+            }
+        );
+        this.rooms = filteredRooms;
     }
 }

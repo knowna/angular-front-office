@@ -17,6 +17,7 @@ import { AccountTransactionTypeService } from 'src/app/Service/Inventory/account
 
 export class ReservationCustomerComponent implements OnInit {
     customers: Customer[];
+    tempCustomers: Customer[];
     customerTypes: CustomerType[];
     customer: Customer;
     msg: string;
@@ -28,6 +29,8 @@ export class ReservationCustomerComponent implements OnInit {
     modalRef: BsModalRef;
     private formSubmitAttempt: boolean;
     public company: any = {};
+
+    searchKeyword ='';
     
     constructor(
         private fb: FormBuilder, 
@@ -61,6 +64,7 @@ export class ReservationCustomerComponent implements OnInit {
         this._customerService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT)
             .subscribe(customers => { 
                 this.customers = customers; 
+                this.tempCustomers = customers;
                 this.isLoading = false; 
             },
             error => this.msg = <any>error);
@@ -98,7 +102,7 @@ export class ReservationCustomerComponent implements OnInit {
     deleteDepartment(id: number, template: TemplateRef<any>) {
         this.dbops = DBOperation.delete;
         this.SetControlsState(true);
-        this.modalTitle = "Delete Customer";
+        this.modalTitle = "Delete Customer ?";
         this.modalBtnTitle = "Delete";
         this.customer = this.customers.filter(x => x.Id == id)[0];
         this.customerForm.controls.Id.setValue(this.customer.Id);
@@ -251,6 +255,23 @@ export class ReservationCustomerComponent implements OnInit {
             //triggering the function
             downloadLink.click();
         }
+    }
+
+
+    searchItem(){
+        let searchKeywordTrimmed = this.searchKeyword.trim();
+        if(searchKeywordTrimmed == '' || searchKeywordTrimmed == null ){
+            this.customers = this.customers;
+        }
+
+        let filteredCustomers: any[] = [];
+
+        filteredCustomers = this.tempCustomers.filter(
+            customer=>{
+                return (customer.CustomerName.toLowerCase().indexOf(searchKeywordTrimmed.toLowerCase()) !== -1);
+            }
+        );
+        this.customers = filteredCustomers;
     }
 
 }

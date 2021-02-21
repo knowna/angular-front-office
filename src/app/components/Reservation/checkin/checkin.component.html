@@ -1,4 +1,103 @@
-﻿<div class='panel panel-primary'>
+﻿<div class="container" style="padding-top: 20px;">
+    <div class="row m-0 mt-3">
+        <div class="col-md-4">
+            <h2 class="header">Check In</h2>
+        </div>
+    </div>
+
+    <div class="row m-0 mt-2">
+        <div class="col-md-2">
+            Filter By Date:
+        </div>
+        <div class="col-md-2">
+            <input class="form-control" placeholder="dd/MM/yyyy" bsDatepicker [(ngModel)]="fromDate" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success" (click)="getDataDateFilter()"> GO</button>
+        </div>
+        <div class="col-md-4 d-flex">
+            <button (click)="getData('today')" class="btn btn-success">
+                <i class="fa fa-clock"></i> Today
+            </button>
+            <button (click)="getData('all')" class="btn btn-info ml-1">
+                <i class="fa fa-clock"></i> Old
+            </button>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary pull-left" (click)="exportTableToExcel('tblReservationCheckInDate')" style="float: right;"> Export</button>
+        </div>
+    </div>
+
+
+    <div class="row m-0 mt-2">
+        <div class="col-sm-12 table-responsive">
+            <div class="alert alert-info" role="alert" *ngIf="isLoading">
+                <img src="../../assets/images/loading.gif" width="32" height="32" /> Loading...
+            </div>
+            <div *ngIf='reservedRooms && reservedRooms.length==0' class="alert alert-info" role="alert">No record found!</div>
+            <table class='table table-bordered' *ngIf='reservedRooms && reservedRooms.length' id="tblReservationCheckInDate">
+                <thead>
+                    <tr>
+                        <th colspan="10" class="text-center">
+                            <strong>{{ company?.NameEnglish }}</strong>
+                            <br /> Reservation Check in Status
+                        </th>
+                        <th class="export-no-display"></th>
+                    </tr>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Guest</th>
+                        <th>Adult</th>
+                        <th>Children</th>
+                        <th>No. of Rooms</th>
+                        <th>Room Type</th>
+                        <th class="export-no-display">Attachment</th>
+                        <th>Check In Date</th>
+                        <th>Check Out Date</th>
+                        <th class="export-no-display">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let rm of reservedRooms">
+                        <td>{{getCustomerFromReservation(rm).CustomerName}} &nbsp; ({{rm.ReservationId}})</td>
+                        <td>{{rm.GuestName}}</td>
+                        <td>{{rm.Adult}}</td>
+                        <td>{{rm.Children}}</td>
+                        <td>{{rm.NumberofRoom}}</td>
+                        <td>{{getRoomType(rm.RoomTypeId)?.Name}}</td>
+                        <td class="export-no-display">
+                            <img *ngIf="rm.File" (click)="viewFile(rm.File,imageView)" [src]="rm.File" alt="Reserver Document" style="height:30px; border-radius:5px;" />
+                            <span *ngIf="rm.File == ''">Not Added</span>
+                        </td>
+                        <td>{{rm.ToCheckInDate | date: 'dd/MM/yyyy h:mm a'}}</td>
+                        <td>{{rm.ToCheckOutDate | date: 'dd/MM/yyyy h:mm a'}}</td>
+                        <td class="export-no-display">
+                            <span>
+                                <img src="../../images/Edit.png" (click)="editReservedRoom(rm.Id,template)" height="32" width="32" />
+                            </span>
+                            <span>
+                                <img src="../../images/Delete.png" (click)="deleteReservedRoom(rm.Id,template)" height="32" width="32" />
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div *ngIf="msg" role="alert" class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                {{msg}}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- <div class='panel panel-primary'>
     <div class='panel-heading'>
         Check In
     </div>
@@ -98,7 +197,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <ng-template #imageView>
     <div class="modal-header">

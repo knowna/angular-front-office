@@ -4,7 +4,12 @@
             <h2 class="header">Rooms</h2>
         </div>
         <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Search by Name">
+            <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search by Number" 
+                (keyup)="searchItem()" 
+                [(ngModel)]="searchKeyword" >
         </div>
        
         <div class="col-md-4">
@@ -26,14 +31,16 @@
             <table class='table table-bordered' *ngIf='rooms && rooms.length'>
                 <thead>
                     <tr>
+                        <th>S.N</th>
                         <th>Room Number</th>
                         <th>Max Capacity</th>
-                        <th>RoomTypeId</th>
+                        <th>Room Type</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let room of rooms">
+                    <tr *ngFor="let room of rooms;index as i">
+                        <td>{{i+1}}</td>
                         <td>{{room.RoomNumber}}</td>
                         <td>{{room.MaxCapacity}}</td>
                         <td>{{getRoomType(room.RoomTypeId).Name}}</td>

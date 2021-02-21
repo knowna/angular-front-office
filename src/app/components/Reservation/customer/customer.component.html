@@ -1,12 +1,29 @@
 ﻿
 <div class="container" style="padding-top: 20px;">
     <div class="row m-0 mt-3">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h2 class="header">Reservation Customers</h2>
         </div>
+        <div class="col-md-4">
+            <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search by Name" 
+                (keyup)="searchItem()" 
+                [(ngModel)]="searchKeyword" >
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-success" (click)="openModal(template)" style="float: right">
+                <strong>
+                    <i class="fa fa-plus"></i>
+                    Add
+                </strong>
+            </button>
+        </div>
+
     </div>
 
-    <div class="row m-0 mt-3">
+    <!-- <div class="row m-0 mt-3">
         <div class="col-md-4">
             <button class="btn btn-success" (click)="openModal(template)">
                 <strong>
@@ -21,7 +38,7 @@
         <div class="col-md-4">
             <button class="btn btn-primary pull-left" (click)="exportTableToExcel('tblReservationCustomer')" style="float: right;"> Export</button>
         </div>
-    </div>
+    </div> -->
 
     <div class="row m-0 mt-2">
         <div class="col-sm-12 table-responsive">
@@ -32,12 +49,13 @@
             <table class='table table-bordered' *ngIf='customers && customers.length' id="tblReservationCustomer">
                 <thead>
                     <tr>
-                        <th colspan="6" class="text-center">
+                        <th colspan="7" class="text-center">
                             <strong>{{ company?.NameEnglish }}</strong>
                             <br /> Reservation Customers List
                         </th>
                     </tr>
                     <tr>
+                        <th>S.N</th>
                         <th>Name</th>
                         <th>Member Id</th>
                         <th>MemberSince</th>
@@ -47,7 +65,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let customer of customers">
+                    <tr *ngFor="let customer of customers;index as i">
+                        <td>{{i+1}}</td>
                         <td>{{customer.CustomerName}}</td>
                         <td>{{customer.MemberId}}</td>
                         <td>{{customer.MemberSince | date: 'dd/MM/yyyy'}}</td>
@@ -62,12 +81,6 @@
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
-                            <!-- <span>
-                                <img src="../../images/Edit.png" (click)="editDepartment(customer.Id,template)" height="32" width="32" />
-                            </span>
-                            <span>
-                                <img src="../../images/Delete.png" (click)="deleteDepartment(customer.Id,template)" height="32" width="32" />
-                            </span> -->
                         </td>
                     </tr>
                 </tbody>

@@ -42,7 +42,7 @@ export class ReservationInquiryComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.modalTitle = "Reservation Inquery Form";
+        this.modalTitle = "Reservation Inquiry Form";
         this.modalBtnTitle = "Search Room Availability";
         this.InqueryForm = this.fb.group({
             Id: [''],

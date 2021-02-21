@@ -63,7 +63,7 @@ export class RoomTypeComponent implements OnInit {
     editroomtype(id: number, template: TemplateRef<any>) {
         this.dbops = DBOperation.update;
         this.SetControlsState(true);
-        this.modalTitle = "Edit DepartmentName";
+        this.modalTitle = "Edit Room";
         this.modalBtnTitle = "Save";
         this.roomtype = this.roomtypes.filter(x => x.Id == id)[0];
         this.roomtypefrm.setValue(this.roomtype);

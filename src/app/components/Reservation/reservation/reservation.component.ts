@@ -110,7 +110,10 @@ export class ReservationComponent implements OnInit {
                     this.reservations = results[4];
                     this.isLoading = false;
                 },
-                error => this.msg = <any>error
+                error => {
+                    this.msg = <any>error;
+                    this.isLoading = false;
+                }
             );
     }
 

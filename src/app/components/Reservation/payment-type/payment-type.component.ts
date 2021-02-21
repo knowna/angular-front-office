@@ -16,6 +16,7 @@ import { PaymentTypeService } from 'src/app/Service/reservation/payment-type.ser
 
 export class PaymentTypeComponent implements OnInit {
     paymentTypes: PaymentType[];
+    tempPaymentTypes: PaymentType[];
     paymentType: PaymentType;
     msg: string;
     isLoading: boolean = false;
@@ -26,6 +27,7 @@ export class PaymentTypeComponent implements OnInit {
     modalRef: BsModalRef;
     searchKeyword ='';
     private formSubmitAttempt: boolean;
+    
     
     constructor(private fb: FormBuilder, private _paymentTypeService: PaymentTypeService, private modalService: BsModalService) { }
 
@@ -38,15 +40,17 @@ export class PaymentTypeComponent implements OnInit {
     }
     
     LoadPaymentTypes(): void {
-        ' '
         this.isLoading = true;
         this._paymentTypeService.get(Global.BASE_PAYMENT_TYPES_ENDPOINT)
-            .subscribe(paymentTypes => { this.paymentTypes = paymentTypes; this.isLoading = false; },
+            .subscribe(paymentTypes => { 
+                this.paymentTypes = paymentTypes;
+                this.tempPaymentTypes = paymentTypes; 
+                this.isLoading = false; 
+            },
             error => this.msg = <any>error);
     }
 
     openModal(template: TemplateRef<any>) {
-
         this.dbops = DBOperation.create;
         this.SetControlsState(true);
         this.modalTitle = "Add Payment Type";
@@ -56,18 +60,16 @@ export class PaymentTypeComponent implements OnInit {
     }
 
     editDepartment(id: number, template: TemplateRef<any>) {
-        ' '
         this.dbops = DBOperation.update;
         this.SetControlsState(true);
         this.modalTitle = "Edit Payment Type";
-        this.modalBtnTitle = "Update";
+        this.modalBtnTitle = "Save";
         this.paymentType = this.paymentTypes.filter(x => x.Id == id)[0];
         this.paymentTypeForm.setValue(this.paymentType);
         this.modalRef = this.modalService.show(template, { backdrop: 'static', keyboard: false });
     }
 
     deleteDepartment(id: number, template: TemplateRef<any>) {
-        ' '
         this.dbops = DBOperation.delete;
         this.SetControlsState(true);
         this.modalTitle = "Confirm to Delete?";
@@ -96,7 +98,7 @@ export class PaymentTypeComponent implements OnInit {
         if (departfrm.valid) {
             switch (this.dbops) {
                 case DBOperation.create:
-                    this._paymentTypeService.post(Global.BASE_PAYMENT_TYPES_ENDPOINT, formData._value).subscribe(
+                    this._paymentTypeService.post(Global.BASE_PAYMENT_TYPES_ENDPOINT, formData.value).subscribe(
                         data => {
                             if (data == 1) //Success
                             {
@@ -115,7 +117,7 @@ export class PaymentTypeComponent implements OnInit {
                     );
                     break;
                 case DBOperation.update:
-                    this._paymentTypeService.put(Global.BASE_PAYMENT_TYPES_ENDPOINT, formData._value.Id, formData._value).subscribe(
+                    this._paymentTypeService.put(Global.BASE_PAYMENT_TYPES_ENDPOINT, formData.value.Id, formData.value).subscribe(
                         data => {
                             if (data == 1) //Success
                             {
@@ -134,7 +136,7 @@ export class PaymentTypeComponent implements OnInit {
                     );
                     break;
                 case DBOperation.delete:
-                    this._paymentTypeService.delete(Global.BASE_PAYMENT_TYPES_ENDPOINT, formData._value.Id).subscribe(
+                    this._paymentTypeService.delete(Global.BASE_PAYMENT_TYPES_ENDPOINT, formData.value.Id).subscribe(
                         data => {
                             if (data == 1) //Success
                             {
@@ -164,5 +166,19 @@ export class PaymentTypeComponent implements OnInit {
         isEnable ? this.paymentTypeForm.enable() : this.paymentTypeForm.disable();
     }
 
-    searchItem(){}
+    searchItem(){
+        let searchKeywordTrimmed = this.searchKeyword.trim();
+        if(searchKeywordTrimmed == '' || searchKeywordTrimmed == null ){
+            this.paymentTypes = this.paymentTypes;
+        }
+
+        let filteredPaymentTypes: any[] = [];
+
+        filteredPaymentTypes = this.tempPaymentTypes.filter(
+            payment=>{
+                return (payment.Name.toLowerCase().indexOf(searchKeywordTrimmed.toLowerCase()) !== -1);
+            }
+        );
+        this.paymentTypes = filteredPaymentTypes;
+    }
 }

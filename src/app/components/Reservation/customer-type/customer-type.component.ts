@@ -16,6 +16,7 @@ import { CustomerTypeService } from 'src/app/Service/reservation/customer-type.s
 
 export class CustomerTypeComponent implements OnInit {
     customerTypes: CustomerType[];
+    tempCustomerTypes: any[];
     customerType: CustomerType;
     msg: string;
     isLoading: boolean = false;
@@ -25,6 +26,8 @@ export class CustomerTypeComponent implements OnInit {
     modalBtnTitle: string;
     modalRef: BsModalRef;
     private formSubmitAttempt: boolean;
+
+    searchKeyword ='';
     
     constructor(private fb: FormBuilder,
         private _customerTypeService: CustomerTypeService,
@@ -39,15 +42,17 @@ export class CustomerTypeComponent implements OnInit {
     }
     
     LoadCustomerTypes(): void {
-        ' '
         this.isLoading = true;
         this._customerTypeService.get(Global.BASE_CUSTOMER_TYPES_ENDPOINT)
-            .subscribe(customerTypes => { this.customerTypes = customerTypes; this.isLoading = false; },
+            .subscribe(customerTypes => { 
+                this.customerTypes = customerTypes; 
+                this.tempCustomerTypes = customerTypes;
+                this.isLoading = false; 
+            },
             error => this.msg = <any>error);
     }
 
     openModal(template: TemplateRef<any>) {
-
         this.dbops = DBOperation.create;
         this.SetControlsState(true);
         this.modalTitle = "Add Customer Type";
@@ -57,7 +62,6 @@ export class CustomerTypeComponent implements OnInit {
     }
 
     editDepartment(id: number, template: TemplateRef<any>) {
-        ' '
         this.dbops = DBOperation.update;
         this.SetControlsState(true);
         this.modalTitle = "Edit Customer Type";
@@ -68,7 +72,6 @@ export class CustomerTypeComponent implements OnInit {
     }
 
     deleteDepartment(id: number, template: TemplateRef<any>) {
-        ' '
         this.dbops = DBOperation.delete;
         this.SetControlsState(true);
         this.modalTitle = "Confirm to Delete?";
@@ -164,5 +167,21 @@ export class CustomerTypeComponent implements OnInit {
     }
     SetControlsState(isEnable: boolean) {
         isEnable ? this.customerTypeForm.enable() : this.customerTypeForm.disable();
+    }
+
+    searchItem(){
+        let searchKeywordTrimmed = this.searchKeyword.trim();
+        if(searchKeywordTrimmed == '' || searchKeywordTrimmed == null ){
+            this.customerTypes = this.customerTypes;
+        }
+
+        let filteredCustomerTypes: any[] = [];
+
+        filteredCustomerTypes = this.tempCustomerTypes.filter(
+            customerType=>{
+                return (customerType.Name.toLowerCase().indexOf(searchKeywordTrimmed.toLowerCase()) !== -1);
+            }
+        );
+        this.customerTypes = filteredCustomerTypes;
     }
 }

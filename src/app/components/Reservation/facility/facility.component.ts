@@ -16,6 +16,8 @@ import { FacilityService } from 'src/app/Service/reservation/facility.services';
 
 export class FacilityComponent implements OnInit {
     facilities: Facility[];
+    tempFacilites: Facility[];
+
     facility: Facility;
     msg: string;
     isLoading: boolean = false;
@@ -25,6 +27,8 @@ export class FacilityComponent implements OnInit {
     modalBtnTitle: string;
     modalRef: BsModalRef;
     private formSubmitAttempt: boolean;
+
+    searchKeyword ='';
     
     constructor(private fb: FormBuilder, private _facilityService: FacilityService, private modalService: BsModalService) { }
 
@@ -37,35 +41,36 @@ export class FacilityComponent implements OnInit {
     }
     
     LoadFacilitys(): void {
-        ' '
         this.isLoading = true;
         this._facilityService.get(Global.BASE_RESERVATION_FACILITY_ENDPOINT)
-            .subscribe(facilities => { this.facilities = facilities; this.isLoading = false; },
+            .subscribe(facilities => { 
+                this.facilities = facilities; 
+                this.tempFacilites = facilities;
+                this.isLoading = false; 
+            },
             error => this.msg = <any>error);
     }
 
     openModal(template: TemplateRef<any>) {
         this.dbops = DBOperation.create;
         this.SetControlsState(true);
-        this.modalTitle = "Add Room Type";
+        this.modalTitle = "Add Facility";
         this.modalBtnTitle = "Save";
         this.facilityForm.reset();
         this.modalRef = this.modalService.show(template, { backdrop: 'static', keyboard: false });
     }
 
     editDepartment(id: number, template: TemplateRef<any>) {
-        ' '
         this.dbops = DBOperation.update;
         this.SetControlsState(true);
-        this.modalTitle = "Edit Room Type";
-        this.modalBtnTitle = "Update";
+        this.modalTitle = "Edit Facility";
+        this.modalBtnTitle = "Save";
         this.facility = this.facilities.filter(x => x.Id == id)[0];
         this.facilityForm.setValue(this.facility);
         this.modalRef = this.modalService.show(template, { backdrop: 'static', keyboard: false });
     }
 
     deleteDepartment(id: number, template: TemplateRef<any>) {
-        ' '
         this.dbops = DBOperation.delete;
         this.SetControlsState(true);
         this.modalTitle = "Confirm to Delete?";
@@ -94,7 +99,7 @@ export class FacilityComponent implements OnInit {
         if (departfrm.valid) {
             switch (this.dbops) {
                 case DBOperation.create:
-                    this._facilityService.post(Global.BASE_RESERVATION_FACILITY_ENDPOINT, formData._value).subscribe(
+                    this._facilityService.post(Global.BASE_RESERVATION_FACILITY_ENDPOINT, formData.value).subscribe(
                         data => {
                             if (data == 1) //Success
                             {
@@ -113,7 +118,7 @@ export class FacilityComponent implements OnInit {
                     );
                     break;
                 case DBOperation.update:
-                    this._facilityService.put(Global.BASE_RESERVATION_FACILITY_ENDPOINT, formData._value.Id, formData._value).subscribe(
+                    this._facilityService.put(Global.BASE_RESERVATION_FACILITY_ENDPOINT, formData.value.Id, formData.value).subscribe(
                         data => {
                             if (data == 1) //Success
                             {
@@ -132,7 +137,7 @@ export class FacilityComponent implements OnInit {
                     );
                     break;
                 case DBOperation.delete:
-                    this._facilityService.delete(Global.BASE_RESERVATION_FACILITY_ENDPOINT, formData._value.Id).subscribe(
+                    this._facilityService.delete(Global.BASE_RESERVATION_FACILITY_ENDPOINT, formData.value.Id).subscribe(
                         data => {
                             if (data == 1) //Success
                             {
@@ -160,5 +165,22 @@ export class FacilityComponent implements OnInit {
     }
     SetControlsState(isEnable: boolean) {
         isEnable ? this.facilityForm.enable() : this.facilityForm.disable();
+    }
+
+
+    searchItem(){
+        let searchKeywordTrimmed = this.searchKeyword.trim();
+        if(searchKeywordTrimmed == '' || searchKeywordTrimmed == null ){
+            this.facilities = this.facilities;
+        }
+
+        let filteredFacilities: any[] = [];
+
+        filteredFacilities = this.tempFacilites.filter(
+            facility=>{
+                return (facility.Name.toLowerCase().indexOf(searchKeywordTrimmed.toLowerCase()) !== -1);
+            }
+        );
+        this.facilities = filteredFacilities;
     }
 }

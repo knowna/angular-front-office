@@ -4,7 +4,12 @@
             <h2 class="header">Customer Types</h2>
         </div>
         <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Search by Name">
+            <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search by Name" 
+                (keyup)="searchItem()" 
+                [(ngModel)]="searchKeyword" >
         </div>
        
         <div class="col-md-4">
@@ -24,12 +29,14 @@
             <table class='table table-bordered' *ngIf='customerTypes && customerTypes.length'>
                 <thead>
                     <tr>
+                        <th>S.N</th>
                         <th>Name</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let customerType of customerTypes">
+                    <tr *ngFor="let customerType of customerTypes;index as i">
+                        <td>{{i+1}}</td>
                         <td>{{customerType.Name}}</td>
                         <td>
                             <div class="d-flex">

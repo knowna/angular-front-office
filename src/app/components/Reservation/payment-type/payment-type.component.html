@@ -50,7 +50,7 @@
             <input 
                 type="text" 
                 class="form-control" 
-                placeholder="Search by User Name" 
+                placeholder="Search by Name" 
                 (keyup)="searchItem()" 
                 [(ngModel)]="searchKeyword" >
         </div>
@@ -70,21 +70,24 @@
             <table class='table table-bordered'>
                 <thead>
                     <tr>
+                        <th>S.N</th>
                         <th>Name</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let customerType of paymentTypes">
+                    <tr *ngFor="let customerType of paymentTypes;index as i">
+                        <td>{{i+1}}</td>
                         <td>{{customerType.Name}}</td>
                         <td>
-
-                            <button class="btn btn-primary btn-sm" (click)="editDepartment(customerType.Id,template)">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm ml-2" (click)="deleteDepartment(customerType.Id,template)">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            
+                            <div class="d-flex">
+                                <button class="btn btn-primary btn-sm" (click)="editDepartment(customerType.Id,template)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm ml-2" (click)="deleteDepartment(customerType.Id,template)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -111,21 +114,22 @@
         </div>
         <div class="modal-body">
             <div class="row">
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Name:</label>
-                    <div class="col-sm-6">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label">Name</label>
                         <input type="text" class="form-control" placeholder="" formControlName="Name" setAutoFocus  tabindex="1">
                         <div class="alert alert-danger" *ngIf="paymentTypeForm.get('Name').hasError('required') && formSubmitAttempt">
                             Name is required
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
         <div class="modal-footer">
             <div>
                 <button type="submit" class="btn btn-success pull-left" tabindex="2">{{modalBtnTitle}}</button>
-                <a class="btn btn-danger pull-right" (click)="modalRef.hide()" tabindex="3">Cancel</a>
+                <button type="button" class="btn btn-danger ml-2" (click)="modalRef.hide()">Cancel</button>
             </div>
         </div>
     </form>

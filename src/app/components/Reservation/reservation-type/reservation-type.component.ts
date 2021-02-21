@@ -16,6 +16,7 @@ import { ReservationTypeService } from 'src/app/Service/reservation/reservation-
 
 export class ReservationTypeComponent implements OnInit {
     reservationTypes: ReservationType[];
+    tempReservationTypes: ReservationType[];
     reservationType: ReservationType;
     msg: string;
     isLoading: boolean = false;
@@ -25,6 +26,8 @@ export class ReservationTypeComponent implements OnInit {
     modalBtnTitle: string;
     modalRef: BsModalRef;
     private formSubmitAttempt: boolean;
+
+    searchKeyword ='';
     
     constructor(private fb: FormBuilder, private _reservationTypeService: ReservationTypeService, private modalService: BsModalService) { }
 
@@ -37,15 +40,17 @@ export class ReservationTypeComponent implements OnInit {
     }
     
     LoadReservationTypes(): void {
-        ' '
         this.isLoading = true;
         this._reservationTypeService.get(Global.BASE_RESERVATION_TYPES_ENDPOINT)
-            .subscribe(reservationTypes => { this.reservationTypes = reservationTypes; this.isLoading = false; },
+            .subscribe(reservationTypes => { 
+                this.reservationTypes = reservationTypes; 
+                this.tempReservationTypes = reservationTypes;
+                this.isLoading = false; 
+            },
             error => this.msg = <any>error);
     }
 
     openModal(template: TemplateRef<any>) {
-
         this.dbops = DBOperation.create;
         this.SetControlsState(true);
         this.modalTitle = "Add Reservation Type";
@@ -55,7 +60,6 @@ export class ReservationTypeComponent implements OnInit {
     }
 
     editDepartment(id: number, template: TemplateRef<any>) {
-        ' '
         this.dbops = DBOperation.update;
         this.SetControlsState(true);
         this.modalTitle = "Edit Reservation Type";
@@ -66,7 +70,6 @@ export class ReservationTypeComponent implements OnInit {
     }
 
     deleteDepartment(id: number, template: TemplateRef<any>) {
-        ' '
         this.dbops = DBOperation.delete;
         this.SetControlsState(true);
         this.modalTitle = "Confirm to Delete?";
@@ -158,5 +161,21 @@ export class ReservationTypeComponent implements OnInit {
     }
     SetControlsState(isEnable: boolean) {
         isEnable ? this.reservationTypeForm.enable() : this.reservationTypeForm.disable();
+    }
+
+    searchItem(){
+        let searchKeywordTrimmed = this.searchKeyword.trim();
+        if(searchKeywordTrimmed == '' || searchKeywordTrimmed == null ){
+            this.reservationTypes = this.reservationTypes;
+        }
+
+        let filteredReservationTypes: any[] = [];
+
+        filteredReservationTypes = this.tempReservationTypes.filter(
+            reservation=>{
+                return (reservation.Name.toLowerCase().indexOf(searchKeywordTrimmed.toLowerCase()) !== -1);
+            }
+        );
+        this.reservationTypes = filteredReservationTypes;
     }
 }
