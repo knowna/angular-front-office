@@ -229,21 +229,21 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="modal-body" style="background-color:#fafafa;">
-            <div class="panel-body" style="background-color:#fafafa;">
+        <div class="modal-body">
+            <div>
                 <input type="text" class="hidden" formControlName="UserName" />
-                <div class="panel panel-defaut" style="background-color:#fafafa;">
+                <div class="panel panel-defaut">
                     <div class="tab-v1">
-                        <ul class="nav nav-tabs" style="background-color:#fafafa;">
-                            <li class="active">
-                                <a href="#reserve" data-toggle="tab">Reservation</a>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item waves-effect waves-light">
+                                <a href="#reserve" class="nav-link m-1 active" id="Reservation-tab" data-toggle="tab" role="tab" aria-controls="Reservation" aria-selected="true">Reservation</a>
                             </li>
-                            <li>
-                                <a href="#guest" data-toggle="tab">Guest Information</a>
+                            <li class="nav-item waves-effect waves-light">
+                                <a href="#guest" class="nav-link m-1" id="Guest-tab" data-toggle="tab" role="tab" aria-controls="Guest" aria-selected="false">Guest Information</a>
                             </li>
                         </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade in active" id="reserve" style="background-color:#fafafa;">
+                        <div class="tab-content mt-3">
+                            <div class="tab-pane fade active show" id="reserve" role="tabpanel" aria-labelledby="Ledger-tab">
                                 <div class="row">
                                     <div class="form-group col-sm-8">
                                         <label class="control-label col-sm-2">Customer:</label>
@@ -431,7 +431,7 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade in" id="guest" style="background-color:#fafafa;">
+                            <div class="tab-pane fade" id="guest" role="tabpanel" aria-labelledby="Taxation-tab">
                                 <div class="row">
                                     <div class="form-group col-sm-12">
                                         <label class="control-label col-sm-2">Full Name:</label>
@@ -613,22 +613,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer" style="background-color:#fafafa;">
+                <div class="modal-footer">
                     <div>
-                        <button type="button" class="btn btn-success btn1 pull-left" (click)="onSubmit(reservedRoomForm, fileUpload)" tabindex="30">{{modalBtnTitle}}</button>
-                        <button type="button" class="btn btn-danger pull-right" (click)="modalRef.hide()" tabindex="31">Cancel</button>
+                        <button type="button" class="btn btn-success pull-left" (click)="onSubmit(reservedRoomForm, fileUpload)" tabindex="30">{{modalBtnTitle}}</button>
+                        <button type="button" class="btn btn-danger pull-right ml-1" (click)="modalRef.hide()" tabindex="31">Cancel</button>
                     </div>
                 </div>
-                <style>
-                    .btn1 {
-                        margin-left: 42%;
-                        width: 80px;
-                    }
-
-                    .btn-danger {
-                        margin-right: 37%;
-                    }
-                </style>
+            
 
             </div>
         </div>
