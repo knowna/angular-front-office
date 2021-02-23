@@ -100,21 +100,63 @@ export class ReservationComponent implements OnInit {
         let reservationsTypes = this._reservationService.get(Global.BASE_RESERVATION_TYPES_ENDPOINT);
         let reservations = this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fetchType=today&moduleName=test');
 
-        forkJoin([customers, paymentTypes, roomTypes, reservationsTypes, reservations])
-            .subscribe (
-                results => {
-                    this.customers = results[0];
-                    this.paymentTypes = results[1];
-                    this.roomTypes = results[2];
-                    this.reservationsTypes = results[3];
-                    this.reservations = results[4];
-                    this.isLoading = false;
-                },
-                error => {
-                    this.msg = <any>error;
-                    this.isLoading = false;
-                }
-            );
+        this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT)
+        .subscribe(
+            customers => {
+                this.customers = customers
+            }
+        );
+
+        this._reservationService.get(Global.BASE_PAYMENT_TYPES_ENDPOINT)
+        .subscribe(
+            paymentTypes => {
+                this.paymentTypes = paymentTypes
+            }
+        );
+
+        this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT)
+        .subscribe(
+            roomTypes => {
+                this.roomTypes = roomTypes
+            }
+        );
+
+        this._reservationService.get(Global.BASE_RESERVATION_TYPES_ENDPOINT)
+        .subscribe(
+            reservationsTypes => {
+                this.reservationsTypes = reservationsTypes
+            }
+        );
+
+        this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fetchType=today&moduleName=test')
+        .subscribe(
+            reservations => {
+                this.reservations = reservations;
+                this.isLoading = false;
+            },
+            error => {
+                this.msg = <any>error;
+                this.isLoading = false;
+            }
+        );
+
+
+        // forkJoin([customers, paymentTypes, roomTypes, reservationsTypes, reservations])
+        //     .subscribe (
+        //         results => {
+        //             console.log('the results', )
+        //             this.customers = results[0];
+        //             this.paymentTypes = results[1];
+        //             this.roomTypes = results[2];
+        //             this.reservationsTypes = results[3];
+        //             this.reservations = results[4];
+        //             this.isLoading = false;
+        //         },
+        //         error => {
+        //             this.msg = <any>error;
+        //             this.isLoading = false;
+        //         }
+        //     );
     }
 
     /**
@@ -234,7 +276,7 @@ export class ReservationComponent implements OnInit {
         this.dbops = DBOperation.update;
         this.SetControlsState(true);
         this.modalTitle = "Edit Reservation";
-        this.modalBtnTitle = "Update";
+        this.modalBtnTitle = "Save";
         this.reset();
         this.getReservation(id)
             .subscribe((reservation: Reservation) => {
@@ -403,7 +445,7 @@ export class ReservationComponent implements OnInit {
                     );
                     break;
                 case DBOperation.update:
-                    this._reservationService.put(Global.BASE_RESERVATION_ENDPOINT, formData._value.Id, reserve.value).subscribe(
+                    this._reservationService.put(Global.BASE_RESERVATION_ENDPOINT, formData.value.Id, reserve.value).subscribe(
                         data => {
                             if (data == 1) {
                                 alert("Data successfully updated.");
@@ -420,7 +462,7 @@ export class ReservationComponent implements OnInit {
                     );
                     break;
                 case DBOperation.delete:
-                    this._reservationService.delete(Global.BASE_RESERVATION_ENDPOINT, formData._value.Id).subscribe(
+                    this._reservationService.delete(Global.BASE_RESERVATION_ENDPOINT, formData.value.Id).subscribe(
                         data => {
                             if (data == 1) {
                                 alert("Reservation successfully deleted.");

@@ -55,12 +55,13 @@
             <table class='table table-bordered' *ngIf='reservations && reservations.length' id="tblReservation">
                 <thead>
                     <tr>
-                        <th colspan="8" class="text-center">
+                        <th colspan="9" class="text-center">
                             <strong>{{ company?.NameEnglish }}</strong>
                             <br /> Reservation Status
                         </th>
                     </tr>
                     <tr>
+                        <th>S.N</th>
                         <th>Customer</th>
                         <th>Amount Paid</th>
                         <th>Booking ID</th>
@@ -72,7 +73,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let reservation of reservations">
+                    <tr *ngFor="let reservation of reservations;index as i">
+                        <td>{{i+1}}</td>
                         <td>{{getCustomer(reservation.CustomerId)?.CustomerName}}</td>
                         <td>{{reservation.AmountPaid.toFixed(2)}}</td>
                         <td>{{reservation.BookingId}}</td>
@@ -81,12 +83,14 @@
                         <td>{{reservation.CheckInDate | date: 'dd/MM/yyyy'}}</td>
                         <td>{{reservation.CheckOutDate | date: 'dd/MM/yyyy'}}</td>
                         <td class="export-no-display">
-                            <span>
-                                <img src="../../images/Edit.png" (click)="editReservation(reservation.Id,template)" height="32" width="32" />
-                            </span>
-                            <span>
-                                <img src="../../images/Delete.png" (click)="deleteReservation(reservation.Id,template)" height="32" width="32" />
-                            </span>
+                            <div class="d-flex">
+                                <button class="btn btn-primary btn-sm" (click)="editReservation(reservation.Id,template)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm ml-2" (click)="deleteReservation(reservation.Id,template)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

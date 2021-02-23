@@ -12,9 +12,7 @@ export class ReservationTypeService {
     }
 
     get(url: string): Observable<any> {
-        return this._http.get(url).pipe(
-                 tap(data => console.log("All: " + JSON.stringify(data))),
-            catchError(this.handleError));
+        return this._http.get(url);
     }
 
     post(url: string, model: any): Observable<any> {
