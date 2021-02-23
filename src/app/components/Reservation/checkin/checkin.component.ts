@@ -66,7 +66,7 @@ export class CheckInComponent implements OnInit {
         private date: DatePipe,
     ) {
         this.company = JSON.parse(localStorage.getItem('company'));
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.currentUser = JSON.parse(localStorage.getItem('userInformation'));
     }
 
     ngOnInit(): void {
@@ -123,7 +123,6 @@ export class CheckInComponent implements OnInit {
     }
     // Remove Individual Room
     removeRoom(i: number) {
-        debugger
         let controls = <FormArray>this.reservedRoomForm.controls['listRoomOccupiedDetail'];
         let controlToRemove = this.reservedRoomForm.controls.listRoomOccupiedDetail['controls'][i].controls;
         let selectedControl = controlToRemove.hasOwnProperty('Id') ? controlToRemove.Id.value : 0;
@@ -145,7 +144,6 @@ export class CheckInComponent implements OnInit {
     }
     //Add Room
     addRoom() {
-        debugger
         const control = <FormArray>this.reservedRoomForm.controls['listRoomOccupiedDetail'];
         const addRoom = this.initRoomlistRoomOccupiedDetail();
         control.push(addRoom);
@@ -176,7 +174,6 @@ export class CheckInComponent implements OnInit {
      * Loads data for reserved rooms list
      */
     loadData(fetchType: string) {
-        debugger
         this.isLoading = true;
         this._reservationService.get(Global.BASE_RESERVATION_ROOM_ENDPOINT)
             .subscribe(roomlists => { this.rooms = roomlists; this.isLoading = false; },
@@ -237,7 +234,6 @@ export class CheckInComponent implements OnInit {
      * @param Id 
      */
     getCHECKINCHECKOUT(Id: number) {
-        debugger
         this.isLoading = false;
         return this._reservationService.get(Global.BASE_CHECKIN_ENDPOINT + '?ReservationId=' + Id + '&fetchType=new');
     }
@@ -262,12 +258,11 @@ export class CheckInComponent implements OnInit {
     }
 
     editReservedRoom(id: number, template: TemplateRef<any>) {
-        debugger
         this.isLoading = false;
         this.dbops = DBOperation.update;
         this.SetControlsState(true);
         this.modalTitle = "Edit Checkin";
-        this.modalBtnTitle = "Update";
+        this.modalBtnTitle = "Save";
         this.getCHECKINCHECKOUT(id)
             .subscribe((reservedroom: RoomReserverd) => {
                 this.reservedRoomForm.controls.Id.setValue(reservedroom.Id);
@@ -388,7 +383,6 @@ export class CheckInComponent implements OnInit {
         let roomReserve = this.reservedRoomForm;
 
         if (roomReserve.valid) {
-            debugger
             let newDate = new Date();
             let checkInDate = new Date(roomReserve.get('ToCheckInDate').value);
             let checkOutDate = new Date(roomReserve.get('ToCheckOutDate').value);
@@ -563,7 +557,6 @@ export class CheckInComponent implements OnInit {
     
     // Fetch reservations based on given fetch type
     getData(fetchType: string) {
-        debugger
         //this.isLoading = true;
         //this._reservationService.get(Global.BASE_CHECKIN_ENDPOINT + '?fetchType=' + fetchType + '&moduleName=test')
         //    .subscribe(
