@@ -124,44 +124,101 @@ export class CheckOutComponent implements OnInit {
         this._reservationService.get(Global.BASE_RESERVATION_ROOM_ENDPOINT)
             .subscribe(roomlists => { this.rooms = roomlists; this.isLoading = false; },
                 error => this.msg = <any>error);
-        let customers = this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT);
-        let roomTypes = this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT);
-        let reservations = this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fetchType=current&moduleName=test');
-        let reservedRooms = this._reservationService.get(Global.BASE_CHECKOUT_ENDPOINT);
+        // let customers = this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT);
+        // let roomTypes = this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT);
+        // let reservations = this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fetchType=current&moduleName=test');
+        // let reservedRooms = this._reservationService.get(Global.BASE_CHECKOUT_ENDPOINT);
 
-        forkJoin([customers, roomTypes, reservations, reservedRooms])
-            .subscribe(results => {
-                this.customers = results[0];
-                this.roomTypes = results[1];
-                this.reservations = results[2];
-                results[3].map((room) => room['File'] = Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut');
-                this.reservedRooms = results[3];
-                this.isLoading = false;
-            },
-                error => this.msg = <any>error
+        this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT)
+            .subscribe(
+                customers => {
+                    this.customers = customers;
+                }
             );
+
+        this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT)
+            .subscribe(
+                roomTypes => {
+                    this.roomTypes = roomTypes;
+                }
+            );
+
+        this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fetchType=current&moduleName=test')
+            .subscribe(
+                reservations => {
+                    this.reservations = reservations;
+                }
+            );
+        
+        this._reservationService.get(Global.BASE_CHECKOUT_ENDPOINT)
+            .subscribe(
+                reservedRooms => {
+                    this.reservedRooms = reservedRooms;
+                }
+            );
+
+        // forkJoin([customers, roomTypes, reservations, reservedRooms])
+        //     .subscribe(results => {
+        //         this.customers = results[0];
+        //         this.roomTypes = results[1];
+        //         this.reservations = results[2];
+        //         results[3].map((room) => room['File'] = Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut');
+        //         this.reservedRooms = results[3];
+        //         this.isLoading = false;
+        //     },
+        //         error => this.msg = <any>error
+        //     );
     }
     getDataDateFilter() {
         this.isLoading = true;
         this._reservationService.get(Global.BASE_RESERVATION_ROOM_ENDPOINT)
             .subscribe(roomlists => { this.rooms = roomlists; this.isLoading = false; },
                 error => this.msg = <any>error);
-        let customers = this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT);
-        let roomTypes = this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT);
-        let reservations = this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
-        let reservedRooms = this._reservationService.get(Global.BASE_CHECKOUT_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
+        // let customers = this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT);
+        // let roomTypes = this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT);
+        // let reservations = this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
+        // let reservedRooms = this._reservationService.get(Global.BASE_CHECKOUT_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
 
-        forkJoin([customers, roomTypes, reservations, reservedRooms])
-            .subscribe(results => {
-                this.customers = results[0];
-                this.roomTypes = results[1];
-                this.reservations = results[2];
-                results[3].map((room) => room['File'] = Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut');
-                this.reservedRooms = results[3];
-                this.isLoading = false;
-            },
-                error => this.msg = <any>error
+
+        this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT)
+            .subscribe(
+                customers => {
+                    this.customers = customers;
+                }
             );
+
+        this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT)
+            .subscribe(
+                roomTypes => {
+                    this.roomTypes = roomTypes;
+                }
+            );
+        
+        this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
+            .subscribe(
+                reservations => {
+                    this.reservations = reservations;
+                }
+            );
+        
+        this._reservationService.get(Global.BASE_CHECKOUT_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
+            .subscribe(
+                reservedRooms => {
+                    this.reservedRooms = reservedRooms;
+                }
+            );
+
+        // forkJoin([customers, roomTypes, reservations, reservedRooms])
+        //     .subscribe(results => {
+        //         this.customers = results[0];
+        //         this.roomTypes = results[1];
+        //         this.reservations = results[2];
+        //         results[3].map((room) => room['File'] = Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut');
+        //         this.reservedRooms = results[3];
+        //         this.isLoading = false;
+        //     },
+        //         error => this.msg = <any>error
+        //     );
     }
     deleteFile(id) {
         this._reservationService.delete(Global.BASE_FILE_UPLOAD_ENDPOINT, id)
@@ -192,7 +249,6 @@ export class CheckOutComponent implements OnInit {
      * @param Id 
      */
     getCHECKINCHECKOUT(Id: number) {
-        debugger
         this.isLoading = false;
         return this._reservationService.get(Global.BASE_CHECKIN_ENDPOINT + '?ReservationId=' + Id + '&fetchType=new');
     }

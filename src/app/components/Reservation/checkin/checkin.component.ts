@@ -153,22 +153,58 @@ export class CheckInComponent implements OnInit {
         this._reservationService.get(Global.BASE_RESERVATION_ROOM_ENDPOINT)
             .subscribe(roomlists => { this.rooms = roomlists; this.isLoading = false; },
                 error => this.msg = <any>error);
-        let customers = this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT);
-        let roomTypes = this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT);
-        let reservations = this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
-        let reservedRooms = this._reservationService.get(Global.BASE_CHECKIN_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
 
-        forkJoin([customers, roomTypes, reservations, reservedRooms])
-            .subscribe(results => {
-                this.customers = results[0];
-                this.roomTypes = results[1];
-                this.reservations = results[2];
-                results[3].map((room) => room['File'] = Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut');
-                this.reservedRooms = results[3];
-                this.isLoading = false;
-            },
-                error => this.msg = <any>error
+        
+        this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT)
+            .subscribe(
+                customers => {
+                    this.customers = customers;
+                }
             );
+
+        
+        this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT)
+            .subscribe(
+                roomTypes => {
+                    this.roomTypes = roomTypes;
+                }
+            );
+
+
+        this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
+            .subscribe(
+                reservations => {
+                    this.reservations = reservations;
+                }
+            );
+
+        this._reservationService.get(Global.BASE_CHECKIN_ENDPOINT + '?fromDate=' + this.date.transform(this.fromDate, 'yyyy-MM-dd') + '&toDate=' + this.date.transform(this.toDate, 'yyyy-MM-dd') + '&fetchType=current')
+            .subscribe(
+                reservedRooms => {
+                    this.reservedRooms = reservedRooms;
+                    // this.reservedRooms.map((room) => 
+                    //     this._reservationService.get(Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut')
+                    //         .subscribe(
+                    //             data => {
+                    //                 room['File'] = data;
+                    //             }
+                    //         )
+                    // );
+                }
+            );
+
+
+        // forkJoin([customers, roomTypes, reservations, reservedRooms])
+        //     .subscribe(results => {
+        //         this.customers = results[0];
+        //         this.roomTypes = results[1];
+        //         this.reservations = results[2];
+        //         results[3].map((room) => room['File'] = Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut');
+        //         this.reservedRooms = results[3];
+        //         this.isLoading = false;
+        //     },
+        //         error => this.msg = <any>error
+        //     );
     }
     /**
      * Loads data for reserved rooms list
@@ -178,22 +214,60 @@ export class CheckInComponent implements OnInit {
         this._reservationService.get(Global.BASE_RESERVATION_ROOM_ENDPOINT)
             .subscribe(roomlists => { this.rooms = roomlists; this.isLoading = false; },
                 error => this.msg = <any>error);
-        let customers =this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT);
-        let roomTypes = this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT);
-        let reservations = this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fetchType='+fetchType+'&moduleName=test');
-        let reservedRooms = this._reservationService.get(Global.BASE_CHECKIN_ENDPOINT + '?fetchType=' + fetchType + '&moduleName=test');
+        // let customers =this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT);
+        // let roomTypes = this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT);
+        // let reservations = this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fetchType='+fetchType+'&moduleName=test');
+        // let reservedRooms = this._reservationService.get(Global.BASE_CHECKIN_ENDPOINT + '?fetchType=' + fetchType + '&moduleName=test');
 
-        forkJoin([customers, roomTypes, reservations, reservedRooms])
-            .subscribe(results => {
-                this.customers = results[0];
-                this.roomTypes = results[1];
-                this.reservations = results[2];
-                results[3].map((room) => room['File'] = Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut');
-                this.reservedRooms = results[3];
-                this.isLoading = false;
-            },
-            error => this.msg = <any>error
-        );
+        this._reservationService.get(Global.BASE_RESERVATION_CUSTOMER_ENDPOINT)
+            .subscribe(
+                customers => {
+                    this.customers = customers;
+                }
+            );
+
+        
+        this._reservationService.get(Global.BASE_ROOM_TYPES_ENDPOINT)
+            .subscribe(
+                roomTypes => {
+                    this.roomTypes = roomTypes;
+                }
+            );
+
+
+        this._reservationService.get(Global.BASE_RESERVATION_ENDPOINT + '?fetchType='+fetchType+'&moduleName=test')
+            .subscribe(
+                reservations => {
+                    this.reservations = reservations;
+                }
+            );
+
+        this._reservationService.get(Global.BASE_CHECKIN_ENDPOINT + '?fetchType=' + fetchType + '&moduleName=test')
+            .subscribe(
+                reservedRooms => {
+                    this.reservedRooms = reservedRooms;
+                    // this.reservedRooms.map((room) => 
+                    //     this._reservationService.get(Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut')
+                    //         .subscribe(
+                    //             data => {
+                    //                 room['File'] = data;
+                    //             }
+                    //         )
+                    // );
+                }
+            );
+
+        // forkJoin([customers, roomTypes, reservations, reservedRooms])
+        //     .subscribe(results => {
+        //         this.customers = results[0];
+        //         this.roomTypes = results[1];
+        //         this.reservations = results[2];
+        //         results[3].map((room) => room['File'] = Global.BASE_HOST_ENDPOINT + Global.BASE_FILE_UPLOAD_ENDPOINT + '?Id=' + room.Id + '&ApplicationModule=CheckInCheckOut');
+        //         this.reservedRooms = results[3];
+        //         this.isLoading = false;
+        //     },
+        //     error => this.msg = <any>error
+        // );
     }
 
     onFileChange(event) {
