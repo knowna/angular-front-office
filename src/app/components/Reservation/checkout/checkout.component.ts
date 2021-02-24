@@ -207,7 +207,7 @@ export class CheckOutComponent implements OnInit {
         this.dbops = DBOperation.update;
         this.SetControlsState(true);
         this.modalTitle = "Edit Checkout";
-        this.modalBtnTitle = "Update";
+        this.modalBtnTitle = "Save";
         this.getCHECKINCHECKOUT(id)
             .subscribe((reservedroom: RoomReserverd) => {
                 this.reservedRoomForm.controls.Id.setValue(reservedroom.Id);
