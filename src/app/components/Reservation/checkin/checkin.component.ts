@@ -317,7 +317,7 @@ export class CheckInComponent implements OnInit {
         this.modalTitle = "Add Check In";
         this.modalBtnTitle = "Save";
         this.reservedRoomForm.reset();
-        this.reservedRoom.File = '';
+        // this.reservedRoom.File = '';
         this.modalRef = this.modalService.show(this.TemplateRef, {
             backdrop: 'static',
             keyboard: false,
