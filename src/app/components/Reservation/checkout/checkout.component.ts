@@ -256,7 +256,7 @@ export class CheckOutComponent implements OnInit {
     viewFile(fileUrl, template: TemplateRef<any>) {
         this.fileUrl = fileUrl;
         this.modalTitle = "View Attachment";
-        this.modalRef = this.modalService.show(template, { keyboard: false, class: 'modal-lg' });
+        this.modalRef = this.modalService.show(template, { keyboard: false, class: 'modal-xl' });
     }
 
     editReservedRoom(id: number, template: TemplateRef<any>) {
@@ -328,7 +328,7 @@ export class CheckOutComponent implements OnInit {
                     control.push(instance);
                 }
 //
-                this.modalRef = this.modalService.show(template, { keyboard: false, class: 'modal-lg' });
+                this.modalRef = this.modalService.show(template, { keyboard: false, class: 'modal-xl' });
             },
                 error => this.msg = <any>error);
     }
@@ -378,7 +378,7 @@ export class CheckOutComponent implements OnInit {
                     let instance = this.fb.group(valuesFromServer);
                     control.push(instance);
                 }
-                this.modalRef = this.modalService.show(template, { keyboard: false, class: 'modal-lg' });
+                this.modalRef = this.modalService.show(template, { keyboard: false, class: 'modal-xl' });
             },
                 error => this.msg = <any>error);
     }
