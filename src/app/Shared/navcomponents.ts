@@ -68,36 +68,42 @@ export const navcomponents=[
               title: 'Payment Types',
               link: 'reservation/payment',
               permission:'FrontOffice:Master:PaymentTypes',
+              img:'../../../assets/images/payment-type.png',
               display: true
             },
             {
               title: 'Facility',
               link: 'reservation/facility',
               permission:'FrontOffice:Master:Facility',
+              img:'../../../assets/images/facility.png',
               display: true
             },
             {
               title: 'Room Types',
               link: 'reservation/roomtype',
               permission:'FrontOffice:Master:RoomTypes',
+              img:'../../../assets/images/manage-roomtype.png',
               display: true
             },
             {
               title: 'Customer Types',
               permission:'FrontOffice:Master:CustomerTypes',
               link: 'reservation/customertypes',
+              img:'../../../assets/images/customer-type.png',
               display: true
             },
             {
               title: 'Reservation Type',
               permission:'FrontOffice:Master:ReservationType',
               link: 'reservation/reservationtype',
+              img:'../../../assets/images/reservation-type.png',
               display: true
             },
             {
               title: 'Rooms Setup',
               permission:'FrontOffice:Master:RoomsSetup',
               link: 'reservation/room',
+              img:'../../../assets/images/room-setup.png',
               display: true
             },
           ]
@@ -215,7 +221,7 @@ export const navcomponents=[
         },
         {
           title: 'Notification',
-          img:'../../../assets/images/report.png',
+          img:'../../../assets/images/notification.png',
           link: 'pos-dashboard/table/kitchen-order',
           permission:'POS:Notification',
           show: false,
