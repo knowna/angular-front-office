@@ -9,13 +9,13 @@ export const navcomponents=[
           title: 'Booking',
           icon: 'fa fa-circle',
           permission:'FrontOffice:Booking',
-          img:'../../../assets/images/bookingBooking.png',
+          img:'../../../assets/images/booking.png',
           show: false,
           children: [
             {
               title: 'Reservation',
               link: 'reservation',
-              img:'../../../assets/images/bookingBooking.png',
+              img:'../../../assets/images/reservation.png',
               permission:'FrontOffice:Booking:Reservation',
               display: true
             },
@@ -29,7 +29,7 @@ export const navcomponents=[
             {
               title: 'Room Status',
               link: 'reservation/reservationstatus',
-              img:'../../../assets/images/status.png',
+              img:'../../../assets/images/room-status.png',
               permission:'FrontOffice:Booking:RoomStatus',
               display: true
             },
@@ -51,7 +51,7 @@ export const navcomponents=[
             {
               title: 'Customer',
               link: 'reservation/customer',
-              img:'../../../assets/images/customer-booking.png',
+              img:'../../../assets/images/customer.png',
               permission:'FrontOffice:Booking:Customer',
               display: true
             }
@@ -61,7 +61,7 @@ export const navcomponents=[
         {
           title: 'Master Setup',
           permission:'FrontOffice:Master',
-          icon: 'fa fa-book',
+          img:'../../../assets/images/master.png',
           show: false,
           children: [
             {
@@ -447,18 +447,18 @@ export const navcomponents=[
               img:'../../../assets/images/purchase-book.png',
               display: true
             },
-            {
-              title: 'Materialized View',
-              link: 'Account/MaterializedView',
-              permission:'Account:Report:MaterializedView',
-              display: true
-            },
-            {
-              title: 'Bill Return View',
-              link: 'Account/BillReturnView',
-              permission:'Account:Report:BillReturnView',
-              display: true
-            },     
+            // {
+            //   title: 'Materialized View',
+            //   link: 'Account/MaterializedView',
+            //   permission:'Account:Report:MaterializedView',
+            //   display: true
+            // },
+            // {
+            //   title: 'Bill Return View',
+            //   link: 'Account/BillReturnView',
+            //   permission:'Account:Report:BillReturnView',
+            //   display: true
+            // },     
           
           ],
         },
@@ -510,18 +510,21 @@ export const navcomponents=[
               title: 'Receipt',
               link: 'Inventory/inventory-receipt',
               permission: 'Inventory:Transaction:Receipt',
+              img:'../../../assets/images/Receipt.png',
               display: true
             },
             {
               title: 'Consumption',
               link: 'Inventory/consumption',
               permission: 'Inventory:Transaction:Consumption',
+              img:'../../../assets/images/consumption.png',
               display: true
             },
             {
               title: 'Stock Damage',
               link: 'Inventory/stock-damage',
               permission: 'Inventory:Transaction:StockDamage',
+              img: '../../../assets/images/stock1.png',
               display: true
             },
           ],
