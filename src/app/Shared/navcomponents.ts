@@ -96,7 +96,7 @@ export const navcomponents=[
               title: 'Reservation Type',
               permission:'FrontOffice:Master:ReservationType',
               link: 'reservation/reservationtype',
-              img:'../../../assets/images/reservation-type.png',
+              img:'../../../assets/images/reservation.png',
               display: true
             },
             {
