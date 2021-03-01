@@ -298,54 +298,62 @@ export const navcomponents=[
         {
           title: 'Transaction',
           permission:'Account:Transaction',
-          icon: 'edit-2-outline',
+          img:'../../../assets/images/transaction-main.png',
           children: [
             {
               title: 'Journal',
               permission:'Account:Transaction:Journal',
               link: 'Account/journalVoucher',
+              img:'../../../assets/images/journal.png',
               display: true
             },
             {
               title: 'Purchase',
               permission:'Account:Transaction:Purchase',
               link: 'Account/purchase',
+              img:'../../../assets/images/purchase.png',
               display: true
             },
             {
               title: 'Sales',
               permission:'Account:Transaction:Sales',
               link: 'Account/sales',
+              img:'../../../assets/images/sales-main.png',
               display: true
             },
             {
               title: 'Receipt',
               permission:'Account:Transaction:Receipt',
               link: 'Account/receipt',
+              img:'../../../assets/images/Receipt.png',
               display: true
             },
             {
               title: 'Payment',
               permission:'Account:Transaction:Payment',
               link: 'Account/payment',
+              img:'../../../assets/images/payment.png',
               display: true
             },
             {
               title: 'Bank/Cash',
               permission:'Account:Transaction:BankCash',
               link: 'Account/contra',
+              img:'../../../assets/images/Bank.png',
               display: true
             },
             {
               title: 'Credit Note',
               permission:'Account:Transaction:CreditNote',
               link: 'Account/credit-note',
+              img:'../../../assets/images/salesReturn.png',
               display: true
             },  
             {
               title: 'Debit Note',
               permission:'Account:Transaction:DebitNote',
               link: 'Account/debit-note',
+              img:'../../../assets/images/PurchaseReturn.png',
               display: true
             },
           ],
@@ -353,79 +361,90 @@ export const navcomponents=[
         {
           title: 'Report',
           permission:'Account:Report',
-          icon: 'keypad-outline',
-          link: '/pages/ui-features',
+          img:'../../../assets/images/report.png',
           children: [
             {
               title: 'Day Book',
               link: 'Account/journalVoucher',
               permission:'Account:Report:DayBook',
+              img:'../../../assets/images/day-book.png',
               display: true
             },
             {
               title: 'Ledger',
               link: 'Account/accountLedgerView',
               permission:'Account:Report:Ledger',
+              img:'../../../assets/images/ledger.png',
               display: true
             },
             {
               title: 'Trial Balance',
               link: 'Account/TrialBalance',
               permission:'Account:Report:TrialBalance',
+              img:'../../../assets/images/trial-balance.png',
               display: true
             },
             {
               title: 'Cash Flow',
               link: 'Account/SaleBook',
               permission:'Account:Report:CashFlow',
+              img:'../../../assets/images/cash-flow.png',
               display: true
             },
             {
               title: 'Fund Flow',
               link: 'Account/SaleBook',
               permission:'Account:Report:FundFlow',
+              img:'../../../assets/images/fund-flow.png',
               display: true
             },
             {
               title: 'Profit & Loss',
               link: 'Account/ProfitLoss',
               permission:'Account:Report:ProfitLoss',
+              img:'../../../assets/images/profit-loss.png',
               display: true
             },
             {
               title: 'Balance Sheet',
               link: 'Account/BalanceSheet',
               permission:'Account:Report:BalanceSheet',
+              img:'../../../assets/images/BalanceSheet.png',
               display: true
             },
             {
               title: 'Sales Book',
               link: 'Account/SaleBook',
               permission:'Account:Report:SalesBook',
+              img:'../../../assets/images/sales-main.png',
               display: true
             },
             {
               title: 'Sales Item Wise',
               link: 'Account/SaleItemWise',
               permission:'Account:Report:SalesItemWise',
+              img:'../../../assets/images/sales-main.png',
               display: true
             },
             {
               title: 'Sales Date Wise',
               link: 'Account/SaleDateWise',
               permission:'Account:Report:SalesDateWise',
+              img:'../../../assets/images/sales-date-wise.png',
               display: true
             },
             {
               title: 'Sales Customer Wise',
               link: 'Account/SaleCustomerWise',
               permission:'Account:Report:SalesCustomerWise',
+              img:'../../../assets/images/sales-main.png',
               display: true
             },
             {
               title: 'Purchase Book',
               link: 'Account/PurchaseBook',
               permission:'Account:Report:PurchaseBook',
+              img:'../../../assets/images/purchase-book.png',
               display: true
             },
             {
